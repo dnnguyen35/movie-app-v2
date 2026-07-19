@@ -27,11 +27,15 @@ const MediaSlide = ({ mediaType, mediaCategory }) => {
 
   return (
     <AutoSwiper>
-      {medias.map((media, index) => (
-        <SwiperSlide key={index}>
-          <MediaItem media={media} mediaType={mediaType} />
-        </SwiperSlide>
-      ))}
+      {medias && medias.length > 0 ? (
+        medias.map((media, index) => (
+          <SwiperSlide key={index}>
+            <MediaItem media={media} mediaType={mediaType} />
+          </SwiperSlide>
+        ))
+      ) : (
+        <p>No media found</p>
+      )}
     </AutoSwiper>
   );
 };

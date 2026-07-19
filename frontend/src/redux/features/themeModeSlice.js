@@ -10,7 +10,6 @@ export const themeModeSlice = createSlice({
   reducers: {
     setThemeMode: (state, action) => {
       state.themeMode = action.payload;
-      console.log("themeMode", action.payload);
       localStorage.setItem("themeMode", action.payload);
     },
   },

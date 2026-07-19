@@ -6,12 +6,11 @@ export const languageModeSlice = createSlice({
   initialState: {
     languageMode: localStorage.getItem("languageMode")
       ? localStorage.getItem("languageMode")
-      : "en",
+      : "vi",
   },
   reducers: {
     setLanguageMode: (state, action) => {
       state.languageMode = action.payload;
-      console.log("languageMode", action.payload);
       localStorage.setItem("languageMode", action.payload);
       i18n.changeLanguage(action.payload);
     },

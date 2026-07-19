@@ -5,7 +5,15 @@
     "tv series": "tv series",
     "search": "search",
     "sign_in": "sign in",
-    "sign_up": "sign up"
+    "sign_up": "sign up",
+    "reset_password": "reset password",
+    "forgot_password": "forgot password",
+    "resend_otp": "resend otp",
+    "verify_otp": "verify otp"
+  },
+  "otp": {
+    "expire_in": "OTP expires in",
+    "expired": "OTP expired"
   },
   "sidebar": {
     "options": {
@@ -42,7 +50,8 @@
   "common": {
     "watch_now": "watch now",
     "see_more": "see more",
-    "delete": "delete"
+    "delete": "delete",
+    "available_soon": "stay tune"
   },
   "medialist": {
     "movies": "movies",
@@ -52,7 +61,7 @@
   },
   "mediasearch": {
     "movie": "movie",
-    "tv": "tv",
+    "tv": "tv series",
     "people": "people",
     "search_placeholder": "Please type here to search !",
     "not_found": "Ooppp not found!"
@@ -85,8 +94,8 @@
     "username_required": "Username is required",
     "password_min": "Password must have at least 1 character",
     "password_required": "Password is required",
-    "displayName_min": "DisplayName must have at least 5 characters",
-    "displayName_required": "DisplayName is required",
+    "name_min": "Display name must have at least 1 characters",
+    "name_required": "Display name is required",
     "confirmPassword_match": "ConfirmPassword does not match",
     "confirmPassword_min": "ConfirmPassword must have at least 1 character",
     "confirmPassword_required": "ConfirmPassword is required",
@@ -94,7 +103,10 @@
     "newPassword_required": "NewPassword is required",
     "confirmNewPassword_match": "Confirm New Password does not match",
     "confirmNewPassword_min": "NewPassword must have at least 1 character",
-    "confirmNewPassword_required": "NewPassword is required"
+    "confirmNewPassword_required": "NewPassword is required",
+
+    "email_required": "Email is required",
+    "email_invalid": "Email format invalid"
   },
   "update_password": "update password",
   "success": {
@@ -112,5 +124,70 @@
   "Username already used": "Username already used",
   "User not exist": "User not exist",
   "Password not correct": "Password not correct",
-  "Your account is currently locked": "Your account is currently locked"
+  "Your account is currently locked": "Your account is currently locked",
+  "dto_validation_error": {
+    "Current password required": "Current password required",
+    "New password required": "New password required",
+
+    "MediaType is required": "Media type required",
+    "MediaId is required": "Media ID required",
+    "MediaTitle is required": "Media title required",
+    "MediaPoster is required": "Media poster required",
+    "MediaRate is required": "Media rating required",
+
+    "Email is required": "Email required",
+    "Email format invalid": "Invalid email",
+    "Email must in 255 characters": "Email max 255 characters",
+
+    "Password is required": "Password required",
+
+    "Name is required": "Name required",
+    "Name must in 50 characters": "Name max 50 characters",
+
+    "RefreshToken is required": "Refresh token required",
+
+    "Content is required": "Content required",
+
+    "OTP is required": "OTP required",
+    "OTP must be 6 numbers": "OTP must be 6 digits"
+  },
+  "error_code": {
+    "REGISTER_SESSION_EXPIRED": "Session expired! Please register again",
+
+    "REVIEW_NOT_FOUND": "Review not found",
+    "FAVORITE_NOT_FOUND": "Favorite not found",
+    "USER_NOT_FOUND": "User not found",
+    "MOVIE_NOT_FOUND": "Movie not found",
+
+    "USER_LOCKED": "User account has been locked",
+
+    "EMAIL_ALREADY_EXISTS": "Email already exists",
+
+    "INVALID_INPUT": "Invalid data",
+    "INVALID_PASSWORD": "Invalid password",
+
+    "INVALID_OTP": "Invalid OTP",
+    "OTP_EXPIRED": "OTP expired",
+
+    "INVALID_ACCESS_TOKEN": "Invalid access token",
+    "EXPIRED_ACCESS_TOKEN": "Access token expired",
+
+    "INVALID_REFRESH_TOKEN": "Invalid refresh token",
+    "EXPIRED_REFRESH_TOKEN": "Refresh token expired",
+
+    "UNAUTHORIZED": "Unauthorized",
+
+    "FORBIDDEN": "Permission denied",
+    "DISABLED_USER": "User is disabled",
+
+    "METHOD_NOT_ALLOWED": "Request method not allowed",
+
+    "BAD_REQUEST": "Bad request",
+
+    "UNSUPPORTED_MEDIA_TYPE": "Unsupported media type",
+
+    "RESET_PASSWORD_LIMITED": "Password reset limit exceeded",
+
+    "INTERNAL_SERVER_ERROR": "Internal server error"
+  }
 }

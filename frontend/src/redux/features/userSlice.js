@@ -3,23 +3,30 @@ import { createSlice } from "@reduxjs/toolkit";
 export const userSlice = createSlice({
   name: "User",
   initialState: {
-    user: localStorage.getItem("user")
-      ? JSON.parse(localStorage.getItem("user"))
-      : null,
+    user:
+      sessionStorage.getItem("user") &&
+      sessionStorage.getItem("user") !== "undefined"
+        ? JSON.parse(sessionStorage.getItem("user"))
+        : null,
     listFavorites: [],
   },
   reducers: {
     setUser: (state, action) => {
       if (action.payload === null) {
-        localStorage.removeItem("actkn");
-        localStorage.removeItem("user");
+        sessionStorage.removeItem("actkn");
+        sessionStorage.removeItem("user");
+        sessionStorage.removeItem("rftkn");
       } else {
-        localStorage.setItem("user", JSON.stringify(action.payload));
+        sessionStorage.setItem("user", JSON.stringify(action.payload.user));
 
-        if (action.payload.token)
-          localStorage.setItem("actkn", action.payload.token);
+        if (action.payload.accessToken)
+          sessionStorage.setItem("actkn", action.payload.accessToken);
+
+        if (action.payload.refreshToken)
+          sessionStorage.setItem("rftkn", action.payload.refreshToken);
       }
-      state.user = action.payload;
+
+      state.user = action.payload ? action.payload.user : null;
     },
     setListFavorites: (state, action) => {
       state.listFavorites = action.payload;
@@ -27,7 +34,7 @@ export const userSlice = createSlice({
     removeFavorite: (state, action) => {
       const { mediaId } = action.payload;
       state.listFavorites = [...state.listFavorites].filter(
-        (e) => e.mediaId.toString() !== mediaId.toString()
+        (e) => e.mediaId.toString() !== mediaId.toString(),
       );
     },
     addFavorite: (state, action) => {

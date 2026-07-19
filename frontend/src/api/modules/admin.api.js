@@ -1,12 +1,12 @@
 import privateClient from "../client/private.client.js";
 
 const adminEndpoints = {
-  usersStats: "admin/users-stats",
-  reviewsStats: "admin/reviews-stats",
-  moviesStats: "admin/movies-stats",
-  lockUser: ({ userId }) => `admin/lock-user/${userId}`,
-  unLockUser: ({ userId }) => `admin/unlock-user/${userId}`,
-  removeUserReview: ({ reviewId }) => `admin/remove-user-review/${reviewId}`,
+  usersStats: "/admin/users-stats",
+  reviewsStats: "/admin/reviews-stats",
+  moviesStats: "/admin/movies-stats",
+  lockUser: ({ userId }) => `/admin/lock/${userId}`,
+  unLockUser: ({ userId }) => `/admin/unlock/${userId}`,
+  removeUserReview: ({ reviewId }) => `/admin/reviews/${reviewId}`,
 };
 
 const adminApi = {
@@ -40,7 +40,7 @@ const adminApi = {
   lockUser: async ({ userId }) => {
     try {
       const response = await privateClient.put(
-        adminEndpoints.lockUser({ userId })
+        adminEndpoints.lockUser({ userId }),
       );
 
       return { response };
@@ -51,7 +51,7 @@ const adminApi = {
   unLockUser: async ({ userId }) => {
     try {
       const response = await privateClient.put(
-        adminEndpoints.unLockUser({ userId })
+        adminEndpoints.unLockUser({ userId }),
       );
 
       return { response };
@@ -62,7 +62,7 @@ const adminApi = {
   removeUserReview: async ({ reviewId }) => {
     try {
       const response = await privateClient.delete(
-        adminEndpoints.removeUserReview({ reviewId })
+        adminEndpoints.removeUserReview({ reviewId }),
       );
 
       return { response };

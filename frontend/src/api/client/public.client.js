@@ -11,13 +11,12 @@ const publicClient = axios.create({
   },
 });
 
-publicClient.interceptors.request.use(async (config) => {
-  const languageMode = store.getState().languageMode.languageMode || "en";
+publicClient.interceptors.request.use((config) => {
+  const languageMode = store.getState().languageMode.languageMode || "vi";
 
   return {
     ...config,
     headers: {
-      "Content-Type": "application/json",
       "Accept-Language": languageMode,
     },
   };
@@ -25,12 +24,13 @@ publicClient.interceptors.request.use(async (config) => {
 
 publicClient.interceptors.response.use(
   (response) => {
-    if (response && response.data) return response.data;
+    if (response && response.data)
+      return response.data.data ? response.data.data : response.data;
     return response;
   },
-  (err) => {
-    throw err.response.data;
-  }
+  (error) => {
+    throw error.response.data;
+  },
 );
 
 export default publicClient;

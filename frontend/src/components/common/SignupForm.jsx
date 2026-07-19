@@ -1,127 +1,191 @@
 import { LoadingButton } from "@mui/lab";
-import { Alert, Box, Button, Stack, TextField } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  IconButton,
+  InputAdornment,
+  Stack,
+  TextField,
+} from "@mui/material";
 import { useFormik } from "formik";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
-import userApi from "../../api/modules/user.api";
-import { setAuthModalOpen } from "../../redux/features/authModalSlice";
-import { setUser } from "../../redux/features/userSlice";
 import { useTranslation } from "react-i18next";
+import { Eye, EyeOff, Icon } from "lucide-react";
 
-const SignupForm = ({ switchAuthState }) => {
-  const dispatch = useDispatch();
+import userApi from "../../api/modules/user.api";
 
+const SignupForm = ({ switchAuthState, actionState }) => {
   const [isSignupRequest, setIsSignupRequest] = useState(false);
-  const [errorMessage, setErrorMessage] = useState();
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const { t } = useTranslation();
 
-  const signinForm = useFormik({
+  const signupForm = useFormik({
     initialValues: {
+      email: "",
+      name: "",
       password: "",
-      username: "",
-      displayName: "",
       confirmPassword: "",
     },
+
     validationSchema: Yup.object({
-      username: Yup.string()
-        .min(5, t("validation.username_min"))
-        .required(t("validation.username_required")),
+      email: Yup.string()
+        .matches(
+          /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+          t("validation.email_invalid"),
+        )
+        .required(t("validation.email_required")),
+
+      name: Yup.string()
+        .min(1, t("validation.name_min"))
+        .required(t("validation.name_required")),
+
       password: Yup.string()
         .min(1, t("validation.password_min"))
         .required(t("validation.password_required")),
-      displayName: Yup.string()
-        .min(5, t("validation.displayName_min"))
-        .required(t("validation.displayName_required")),
+
       confirmPassword: Yup.string()
         .oneOf([Yup.ref("password")], t("validation.confirmPassword_match"))
         .min(1, t("validation.confirmPassword_min"))
         .required(t("validation.confirmPassword_required")),
     }),
+
     onSubmit: async (values) => {
-      setErrorMessage(undefined);
+      setErrorMessage(null);
       setIsSignupRequest(true);
-      const { response, error } = await userApi.signup(values);
+
+      const payload = {
+        email: values.email,
+        name: values.name,
+        password: values.password,
+      };
+
+      const { response, error } = await userApi.signup(payload);
+
       setIsSignupRequest(false);
 
       if (response) {
-        signinForm.resetForm();
-        dispatch(setUser(response));
-        dispatch(setAuthModalOpen(false));
-        toast.success(t("success.sign_up"));
+        signupForm.resetForm();
+
+        toast.success(t("success.otp_sent"));
+
+        switchAuthState(actionState.verifyOtp, {
+          email: values.email,
+          otpExpireAt: response.otpExpireAt,
+        });
       }
 
       if (error) {
         console.log(error.message);
-        setErrorMessage(error.message);
+        setErrorMessage(error?.data || error?.errorCode);
       }
     },
   });
 
   return (
-    <Box component="form" onSubmit={signinForm.handleSubmit}>
+    <Box component="form" onSubmit={signupForm.handleSubmit}>
       <Stack spacing={3}>
         <TextField
-          type="text"
-          placeholder="Username"
-          name="username"
+          type="email"
+          placeholder="Email"
+          name="email"
           fullWidth
-          value={signinForm.values.username}
-          onChange={signinForm.handleChange}
+          value={signupForm.values.email}
+          onChange={signupForm.handleChange}
           color="success"
           error={
-            signinForm.touched.username &&
-            signinForm.errors.username !== undefined
+            signupForm.touched.email && signupForm.errors.email !== undefined
           }
-          helperText={signinForm.touched.username && signinForm.errors.username}
+          helperText={signupForm.touched.email && signupForm.errors.email}
         />
+
         <TextField
           type="text"
           placeholder="Display name"
-          name="displayName"
+          name="name"
           fullWidth
-          value={signinForm.values.displayName}
-          onChange={signinForm.handleChange}
+          value={signupForm.values.name}
+          onChange={signupForm.handleChange}
           color="success"
           error={
-            signinForm.touched.displayName &&
-            signinForm.errors.displayName !== undefined
+            signupForm.touched.name && signupForm.errors.name !== undefined
           }
-          helperText={
-            signinForm.touched.displayName && signinForm.errors.displayName
-          }
+          helperText={signupForm.touched.name && signupForm.errors.name}
         />
+
         <TextField
-          type="password"
+          type={showPassword ? "text" : "password"}
           placeholder="Password"
           name="password"
           fullWidth
-          value={signinForm.values.password}
-          onChange={signinForm.handleChange}
+          value={signupForm.values.password}
+          onChange={signupForm.handleChange}
           color="success"
           error={
-            signinForm.touched.password &&
-            signinForm.errors.password !== undefined
+            signupForm.touched.password &&
+            signupForm.errors.password !== undefined
           }
-          helperText={signinForm.touched.password && signinForm.errors.password}
+          helperText={signupForm.touched.password && signupForm.errors.password}
+          slotProps={{
+            input: {
+              readOnly: false,
+              onCopy: (e) => e.preventDefault(),
+              onCut: (e) => e.preventDefault(),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    edge="end"
+                  >
+                    {showPassword ? <EyeOff /> : <Eye />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            },
+          }}
         />
+
         <TextField
-          type="password"
+          type={showConfirmPassword ? "text" : "password"}
           placeholder="Confirm password"
           name="confirmPassword"
           fullWidth
-          value={signinForm.values.confirmPassword}
-          onChange={signinForm.handleChange}
+          value={signupForm.values.confirmPassword}
+          onChange={signupForm.handleChange}
           color="success"
           error={
-            signinForm.touched.confirmPassword &&
-            signinForm.errors.confirmPassword !== undefined
+            signupForm.touched.confirmPassword &&
+            signupForm.errors.confirmPassword !== undefined
           }
           helperText={
-            signinForm.touched.confirmPassword &&
-            signinForm.errors.confirmPassword
+            signupForm.touched.confirmPassword &&
+            signupForm.errors.confirmPassword
           }
+          slotProps={{
+            input: {
+              readOnly: false,
+              onCopy: (e) => e.preventDefault(),
+              onCut: (e) => e.preventDefault(),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    type="button"
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    edge="end"
+                  >
+                    {showConfirmPassword ? <EyeOff /> : <Eye />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            },
+          }}
         />
       </Stack>
 
@@ -136,17 +200,30 @@ const SignupForm = ({ switchAuthState }) => {
         {t("topbar.sign_up")}
       </LoadingButton>
 
-      <Button fullWidth sx={{ marginTop: 1 }} onClick={() => switchAuthState()}>
+      <Button
+        fullWidth
+        sx={{ marginTop: 1 }}
+        onClick={() => switchAuthState(actionState.signin)}
+      >
         {t("topbar.sign_in")}
       </Button>
 
-      {errorMessage && (
-        <Box sx={{ marginTop: 2 }}>
-          <Alert severity="warning" variant="outlined">
-            {t(errorMessage)}
-          </Alert>
-        </Box>
-      )}
+      {errorMessage &&
+        (typeof errorMessage === "string" ? (
+          <Box sx={{ mt: 2 }}>
+            <Alert severity="warning" variant="outlined">
+              {t(`error_code.${errorMessage}`)}
+            </Alert>
+          </Box>
+        ) : (
+          Object.entries(errorMessage).map(([key, value]) => (
+            <Box key={key} sx={{ mt: 2 }}>
+              <Alert severity="warning" variant="outlined">
+                {t(`dto_validation_error.${value}`)}
+              </Alert>
+            </Box>
+          ))
+        ))}
     </Box>
   );
 };

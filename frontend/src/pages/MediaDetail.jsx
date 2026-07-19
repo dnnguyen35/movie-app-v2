@@ -1,12 +1,22 @@
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import TimelapseIcon from "@mui/icons-material/Timelapse";
 
 import { LoadingButton } from "@mui/lab";
-import { Box, Button, Chip, Divider, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Chip,
+  colors,
+  Divider,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import CircularRate from "../components/common/CircularRate";
@@ -31,6 +41,14 @@ import MediaSlide from "../components/common/MediaSlide";
 import MediaReview from "../components/common/MediaReview";
 import PageNotFound from "./PageNotFound";
 import { useTranslation } from "react-i18next";
+import MediaVideo from "../components/common/MediaVideo";
+import EpisodeSelector from "../components/common/EpisodeSelector";
+import videoSourceApi from "../api/modules/video.api";
+import { routesGen } from "../routes/routes";
+import { convertGenreToSlugString } from "../utils/convertGenreToSlugString.utils";
+import { convertCountryToSlugString } from "../utils/convertCountryIsoToSlugString.utils";
+import { convertMinuteToHour } from "../utils/convertMinuteToHour.utils";
+import { languageModes } from "../configs/language.config";
 
 const MediaDetail = () => {
   const { mediaType, mediaId } = useParams();
@@ -44,9 +62,12 @@ const MediaDetail = () => {
   const [genres, setGenres] = useState([]);
   const { t } = useTranslation();
 
+  const [mediaSourceStatus, setMediaSourceStatus] = useState(false);
+  const [mediaSource, setMediaSource] = useState(null);
+
   const dispatch = useDispatch();
 
-  const videoRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -56,12 +77,61 @@ const MediaDetail = () => {
         mediaType,
         mediaId,
       });
+
+      if (response) {
+        const { response: mediaSearchResponse, error: mediaSearchError } =
+          await videoSourceApi.getMediaSearch({
+            keyword: response.detail?.original_title
+              ? response.detail?.original_title
+              : response.detail?.original_name,
+            year:
+              response.detail?.release_date?.split("-")[0] ||
+              [
+                response.detail?.last_air_date?.split("-")[0],
+                response.detail?.first_air_date?.split("-")[0],
+              ]
+                .filter(Boolean)
+                .join(","),
+            category: convertGenreToSlugString(response.detail?.genres),
+            country: convertCountryToSlugString(
+              response.detail?.production_countries,
+            ),
+          });
+
+        if (mediaSearchResponse && mediaSearchResponse?.items?.length > 0) {
+          const { response: mediaVideoResponse, error: mediaVideoError } =
+            await videoSourceApi.getMediaVideo({
+              mediaSlug: mediaSearchResponse.items[0].slug,
+            });
+
+          if (
+            mediaVideoResponse &&
+            mediaVideoResponse.item.episodes.length > 0 &&
+            mediaVideoResponse.item.episodes[0].server_data[0].link_m3u8
+          ) {
+            if (
+              mediaType === tmdbConfigs.mediaType.tv &&
+              mediaVideoResponse.item.type === "series"
+            ) {
+              setMediaSourceStatus(true);
+              setMediaSource(mediaVideoResponse);
+            } else if (
+              mediaType === tmdbConfigs.mediaType.movie &&
+              mediaVideoResponse.item.type !== "series"
+            ) {
+              setMediaSourceStatus(true);
+              setMediaSource(mediaVideoResponse);
+            }
+          }
+        }
+      }
+
       dispatch(setGlobalLoading(false));
 
       if (response) {
         setMedia(response);
-        setIsFavorite(response.favorite);
-        setGenres(response.genres.splice(0, 2));
+        setIsFavorite(response.isFavorite);
+        setGenres(response.detail.genres.splice(0, 2));
       }
 
       if (error) toast.error(error.message);
@@ -69,6 +139,11 @@ const MediaDetail = () => {
 
     if (tmdbConfigs.mediaType.hasOwnProperty(mediaType) && !isNaN(mediaId))
       getMedia();
+
+    return () => {
+      setMediaSourceStatus(false);
+      setMediaSource(null);
+    };
   }, [mediaType, mediaId, dispatch, languageMode]);
 
   useEffect(() => {
@@ -76,7 +151,7 @@ const MediaDetail = () => {
       setIsFavorite(false);
       return;
     } else if (user && media) {
-      setIsFavorite(media.favorite);
+      setIsFavorite(media.isFavorite);
     }
   }, [user]);
 
@@ -93,11 +168,11 @@ const MediaDetail = () => {
     setOnRequest(true);
 
     const body = {
-      mediaId: media.id,
-      mediaTitle: media.title || media.name,
+      mediaId: media.detail.id,
+      mediaTitle: media.detail.title || media.detail.name,
       mediaType: mediaType,
-      mediaPoster: media.poster_path,
-      mediaRate: media.vote_average,
+      mediaPoster: media.detail.poster_path,
+      mediaRate: media.detail.vote_average,
     };
 
     const { response, error } = await favoriteApi.add(body);
@@ -118,7 +193,7 @@ const MediaDetail = () => {
     setOnRequest(true);
 
     const favorite = listFavorites.find(
-      (e) => e.mediaId.toString() === media.id.toString()
+      (favorite) => favorite.mediaId.toString() === media.detail.id.toString(),
     );
 
     const { response, error } = await favoriteApi.remove({
@@ -143,7 +218,7 @@ const MediaDetail = () => {
     <>
       <ImageHeader
         imgPath={tmdbConfigs.backdropPath(
-          media.backdrop_path || media.poster_path
+          media.detail.backdrop_path || media.detail.poster_path,
         )}
       />
       <Box
@@ -177,8 +252,8 @@ const MediaDetail = () => {
                   paddingTop: "140%",
                   ...uiConfigs.style.backgroundImage(
                     tmdbConfigs.posterPath(
-                      media.poster_path || media.backdrop_path
-                    )
+                      media.detail.poster_path || media.detail.backdrop_path,
+                    ),
                   ),
                 }}
               />
@@ -193,25 +268,38 @@ const MediaDetail = () => {
               }}
             >
               <Stack spacing={5}>
-                {/* title */}
-                <Typography
-                  variant="h4"
-                  fontSize={{ xs: "2rem", md: "2rem", lg: "4rem" }}
-                  fontWeight="700"
-                  sx={{ ...uiConfigs.style.typoLines(2, "left") }}
+                <Stack
+                  direction={"column"}
+                  spacing={1}
+                  alignItems={"flex-start"}
                 >
-                  {`${media.title || media.name} ${
-                    mediaType === tmdbConfigs.mediaType.movie
-                      ? media.release_date.split("-")[0]
-                      : media.first_air_date.split("-")[0]
-                  }`}
-                </Typography>
-                {/* title */}
+                  {/* title */}
+                  <Typography
+                    variant="h4"
+                    fontSize={{ xs: "2rem", md: "2rem", lg: "3rem" }}
+                    fontWeight="700"
+                    sx={{ ...uiConfigs.style.typoLines(1, "left") }}
+                  >
+                    {languageMode === languageModes.vi
+                      ? `${mediaSource?.item.name || media.detail.title || media.detail.name}`
+                      : `${media.detail.title || media.detail.name}`}
+                  </Typography>
+
+                  <Typography
+                    variant="h4"
+                    fontSize={{ xs: "1rem", md: "1rem", lg: "2rem" }}
+                    fontWeight="200"
+                    sx={{ ...uiConfigs.style.typoLines(1, "left") }}
+                  >
+                    {`${mediaSource?.item.origin_name || media.detail.original_title || media.detail.original_name}`}
+                  </Typography>
+                  {/* title */}
+                </Stack>
 
                 {/* rate and genres */}
                 <Stack direction="row" spacing={1} alignItems="center">
                   {/* rate */}
-                  <CircularRate value={media.vote_average} />
+                  <CircularRate value={media.detail.vote_average} />
                   {/* rate */}
                   <Divider orientation="vertical" />
                   {/* genres */}
@@ -227,12 +315,51 @@ const MediaDetail = () => {
                 </Stack>
                 {/* rate and genres */}
 
+                {/* release date and duration time*/}
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <CalendarMonthIcon color="primary" />
+                    <Chip
+                      label={
+                        mediaType === tmdbConfigs.mediaType.movie
+                          ? media?.detail?.release_date?.split("-")[0]
+                          : media?.detail?.first_air_date?.split("-")[0]
+                      }
+                      variant="filled"
+                      color="primary"
+                    />
+                  </Stack>
+
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <TimelapseIcon color="primary" />
+                    <Chip
+                      label={convertMinuteToHour(
+                        mediaSource?.item?.time?.split(" ")[0] ||
+                          media?.detail?.runtime ||
+                          media?.detail?.episode_run_time[0],
+                      )}
+                      variant="filled"
+                      color="primary"
+                    />
+                  </Stack>
+                </Stack>
+                {/* release date and duration time*/}
+
                 {/* overview */}
                 <Typography
                   variant="body1"
                   sx={{ ...uiConfigs.style.typoLines(5) }}
                 >
-                  {media.overview}
+                  {languageMode === languageModes.vi
+                    ? `${
+                        mediaSource?.item?.content
+                          ?.replace(/<\/?[^>]+(>|$)/g, "")
+                          ?.replaceAll("&quot;", '"')
+                          ?.replaceAll("&amp;", "&")
+                          ?.replaceAll("&#039;", "'")
+                          ?.replaceAll("&apos;", "'") || media.detail.overview
+                      }`
+                    : media.detail.overview}
                 </Typography>
                 {/* overview */}
 
@@ -261,11 +388,15 @@ const MediaDetail = () => {
                     sx={{ width: "max-content" }}
                     size="large"
                     startIcon={<PlayArrowIcon />}
-                    onClick={() =>
-                      videoRef.current.scrollIntoView({ behavior: "smooth" })
-                    }
+                    onClick={() => {
+                      if (!mediaSourceStatus) return;
+
+                      navigate(routesGen.mediaStream(mediaType, mediaId));
+                    }}
                   >
-                    {t("common.watch_now")}
+                    {mediaSourceStatus
+                      ? t("common.watch_now")
+                      : t("common.available_soon")}
                   </Button>
                 </Stack>
                 {/* buttons */}
@@ -282,13 +413,13 @@ const MediaDetail = () => {
         </Box>
         {/* media content */}
 
-        {/* media videos */}
-        <div ref={videoRef} style={{ paddingTop: "2rem" }}>
+        {/* media trailers */}
+        <div>
           <Container header={t("mediadetail.videos")}>
             <MediaVideosSlide videos={[...media.videos.results].splice(0, 5)} />
           </Container>
         </div>
-        {/* media videos */}
+        {/* media trailers */}
 
         {/* media backdrop */}
         {media.images.backdrops.length > 0 && (
@@ -316,10 +447,13 @@ const MediaDetail = () => {
 
         {/* media recommendation */}
         <Container header={t("mediadetail.you_may_like")}>
-          {media.recommend.length > 0 && (
-            <RecommendSlide medias={media.recommend} mediaType={mediaType} />
+          {media.recommend.results.length > 0 && (
+            <RecommendSlide
+              medias={media.recommend.results}
+              mediaType={mediaType}
+            />
           )}
-          {media.recommend.length === 0 && (
+          {media.recommend.results.length === 0 && (
             <MediaSlide
               mediaType={mediaType}
               mediaCategory={tmdbConfigs.mediaCategory.top_rated}
@@ -329,7 +463,9 @@ const MediaDetail = () => {
         {/* media recommendation */}
       </Box>
     </>
-  ) : null;
+  ) : (
+    <PageNotFound />
+  );
 };
 
 export default MediaDetail;

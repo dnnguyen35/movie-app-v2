@@ -1,11 +1,19 @@
 {
   "topbar": {
     "home": "home",
-    "movies": "movies",
-    "tv series": "tv series",
+    "movies": "phim lẻ",
+    "tv series": "phim bộ",
     "search": "tìm kiếm",
     "sign_in": "đăng nhập",
-    "sign_up": "đăng ký"
+    "sign_up": "đăng ký",
+    "reset_password": "đặt lại mật khẩu",
+    "forgot_password": "quên mật khẩu",
+    "resend_otp": "nhận otp mới",
+    "verify_otp": "xác thực otp"
+  },
+  "otp": {
+    "expire_in": "OTP hết hạn sau",
+    "expired": "OTP đã hết hạn"
   },
   "sidebar": {
     "options": {
@@ -42,7 +50,8 @@
   "common": {
     "watch_now": "xem ngay",
     "see_more": "xem thêm",
-    "delete": "xóa"
+    "delete": "xóa",
+    "available_soon": "sắp chiếu"
   },
   "medialist": {
     "movies": "phim",
@@ -51,8 +60,8 @@
     "top_rated": "đánh giá cao"
   },
   "mediasearch": {
-    "movie": "phim",
-    "tv": "tv",
+    "movie": "phim lẻ",
+    "tv": "phim bộ",
     "people": "cá nhân",
     "search_placeholder": "Nhập thông tin vào đây để tìm kiếm !",
     "not_found": "Không tìm thấy!"
@@ -85,8 +94,8 @@
     "username_required": "Tên là bắt buộc",
     "password_min": "Mật khẩu phải ít nhất 1 ký tự",
     "password_required": "Mật khẩu là bắt buộc",
-    "displayName_min": "Tên phải có ít nhất 5 ký tự",
-    "displayName_required": "Tên là bắt buộc",
+    "name_min": "Tên phải có ít nhất 1 ký tự",
+    "name_required": "Tên là bắt buộc",
     "confirmPassword_match": "Mật khẩu không khớp",
     "confirmPassword_min": "Mật khẩu phải có ít nhất 1 ký tự",
     "confirmPassword_required": "Mật khẩu là bắt buộc",
@@ -94,7 +103,10 @@
     "newPassword_required": "Vui lòng nhập mật khẩu mới",
     "confirmNewPassword_match": "Mật khẩu mới không khớp",
     "confirmNewPassword_min": "Mật khẩu mới phải ít nhất 1 ký tự",
-    "confirmNewPassword_required": "Vui lòng nhập lại mật khẩu mới"
+    "confirmNewPassword_required": "Vui lòng nhập lại mật khẩu mới",
+
+    "email_required": "Email là bắt buộc",
+    "email_invalid": "Email sai định dạng"
   },
   "update_password": "đổi mật khẩu",
   "success": {
@@ -112,5 +124,70 @@
   "Username already used": "Tên đã tồn tại",
   "User not exist": "Người dùng không tồn tại",
   "Password not correct": "Sai mật khẩu",
-  "Your account is currently locked": "Tài khoản bị khóa"
+  "Your account is currently locked": "Tài khoản bị khóa",
+  "dto_validation_error": {
+    "Current password required": "Vui lòng nhập mật khẩu hiện tại",
+    "New password required": "Vui lòng nhập mật khẩu mới",
+
+    "MediaType is required": "Vui lòng chọn loại nội dung",
+    "MediaId is required": "Vui lòng nhập ID nội dung",
+    "MediaTitle is required": "Vui lòng nhập tiêu đề",
+    "MediaPoster is required": "Vui lòng nhập ảnh đại diện",
+    "MediaRate is required": "Vui lòng nhập điểm đánh giá",
+
+    "Email is required": "Vui lòng nhập email",
+    "Email format invalid": "Email không hợp lệ",
+    "Email must in 255 characters": "Email tối đa 255 ký tự",
+
+    "Password is required": "Vui lòng nhập mật khẩu",
+
+    "Name is required": "Vui lòng nhập tên",
+    "Name must in 50 characters": "Tên tối đa 50 ký tự",
+
+    "RefreshToken is required": "Vui lòng nhập refresh token",
+
+    "Content is required": "Vui lòng nhập nội dung",
+
+    "OTP is required": "Vui lòng nhập mã OTP",
+    "OTP must be 6 numbers": "OTP phải gồm 6 chữ số"
+  },
+  "error_code": {
+    "REGISTER_SESSION_EXPIRED": "Phiên đăng ký đã hết hạn. Vui lòng đăng ký lại",
+
+    "REVIEW_NOT_FOUND": "Không tìm thấy đánh giá",
+    "FAVORITE_NOT_FOUND": "Không tìm thấy mục yêu thích",
+    "USER_NOT_FOUND": "Không tìm thấy người dùng",
+    "MOVIE_NOT_FOUND": "Không tìm thấy phim",
+
+    "USER_LOCKED": "Tài khoản đã bị khóa",
+
+    "EMAIL_ALREADY_EXISTS": "Email đã tồn tại",
+
+    "INVALID_INPUT": "Dữ liệu không hợp lệ",
+    "INVALID_PASSWORD": "Mật khẩu không đúng",
+
+    "INVALID_OTP": "Mã OTP không hợp lệ",
+    "OTP_EXPIRED": "Mã OTP đã hết hạn",
+
+    "INVALID_ACCESS_TOKEN": "Access token không hợp lệ",
+    "EXPIRED_ACCESS_TOKEN": "Access token đã hết hạn",
+
+    "INVALID_REFRESH_TOKEN": "Refresh token không hợp lệ",
+    "EXPIRED_REFRESH_TOKEN": "Refresh token đã hết hạn",
+
+    "UNAUTHORIZED": "Chưa xác thực",
+
+    "FORBIDDEN": "Bạn không có quyền truy cập",
+    "DISABLED_USER": "Tài khoản đã bị vô hiệu hóa",
+
+    "METHOD_NOT_ALLOWED": "Phương thức yêu cầu không được hỗ trợ",
+
+    "BAD_REQUEST": "Yêu cầu không hợp lệ",
+
+    "UNSUPPORTED_MEDIA_TYPE": "Định dạng dữ liệu không được hỗ trợ",
+
+    "RESET_PASSWORD_LIMITED": "Bạn đã vượt quá số lần đặt lại mật khẩu",
+
+    "INTERNAL_SERVER_ERROR": "Đã xảy ra lỗi hệ thống"
+  }
 }

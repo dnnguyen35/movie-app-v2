@@ -40,13 +40,13 @@ const ScrollAppBar = ({ children, window }) => {
       color: trigger
         ? "text.primary"
         : themeMode === themeModes.dark
-        ? "primary.contrastText"
-        : "text.primary",
+          ? "primary.contrastText"
+          : "text.primary",
       backgroundColor: trigger
         ? "background.paper"
         : themeMode === themeModes.dark
-        ? "transparent"
-        : "background.paper",
+          ? "transparent"
+          : "background.paper",
     },
   });
 };
@@ -138,7 +138,9 @@ const Topbar = () => {
                   {t("topbar.sign_in")}
                 </Button>
               )}
-              {user && user?.isAdmin ? (
+              {user &&
+              Array.isArray(user.roles) &&
+              user.roles.includes("ROLE_ADMIN") ? (
                 <Link to="/admin" style={{ textDecoration: "none" }}>
                   <IconButton sx={{ color: "primary.main" }}>
                     <SettingsOutlinedIcon />

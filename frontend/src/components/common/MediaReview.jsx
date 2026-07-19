@@ -53,7 +53,7 @@ const ReviewItem = ({ review, onRemoved }) => {
     >
       <Stack direction="row" spacing={2}>
         {/* Avatar */}
-        <TextAvatar text={review.user?.displayName} />
+        <TextAvatar text={review.user?.name} />
         {/* Avatar */}
 
         <Stack spacing={2} flexGrow={1}>
@@ -119,10 +119,10 @@ const MediaReview = ({ reviews, media, mediaType }) => {
 
     const body = {
       content,
-      mediaId: media.id,
+      mediaId: media.detail.id,
       mediaType,
-      mediaTitle: media.title || media.name,
-      mediaPoster: media.poster_path,
+      mediaTitle: media.detail.title || media.detail.name,
+      mediaPoster: media.detail.poster_path,
     };
 
     const { response, error } = await reviewApi.add(body);
@@ -199,7 +199,7 @@ const MediaReview = ({ reviews, media, mediaType }) => {
                   <ReviewItem review={item} onRemoved={onRemoved} />
                   <Divider sx={{ display: { xs: "block", md: "none" } }} />
                 </Box>
-              ) : null
+              ) : null,
             )}
             {filteredReviews.length < listReviews.length && (
               <Button
@@ -230,10 +230,10 @@ const MediaReview = ({ reviews, media, mediaType }) => {
           <>
             <Divider />
             <Stack direction="row" spacing={2}>
-              <TextAvatar text={user.displayName} />
+              <TextAvatar text={user?.name} />
               <Stack spacing={2} flexGrow={1}>
                 <Typography variant="h6" fontWeight={700}>
-                  {user.displayName}
+                  {user.name}
                 </Typography>
                 <TextField
                   value={content}

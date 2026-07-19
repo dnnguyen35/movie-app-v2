@@ -62,7 +62,7 @@ const ReviewItem = ({ review, onRemoved }) => {
               borderRadius: "2%",
               paddingTop: "160%",
               ...uiConfigs.style.backgroundImage(
-                tmdbConfigs.posterPath(review.mediaPoster)
+                tmdbConfigs.posterPath(review.mediaPoster),
               ),
             }}
           />
@@ -153,9 +153,7 @@ const ReviewList = () => {
   };
 
   const onRemoved = (id) => {
-    console.log({ reviews });
     const newReviews = [...reviews].filter((e) => e.id !== id);
-    console.log({ newReviews });
     setReviews(newReviews);
     setFilteredReviews([...newReviews].splice(0, page * perPage));
     setCount(count - 1);

@@ -1,5 +1,11 @@
 import { LoadingButton } from "@mui/lab";
-import { Box, Stack, TextField } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  InputAdornment,
+  Stack,
+  TextField,
+} from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Container from "../components/common/Container";
@@ -12,6 +18,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../redux/features/userSlice";
 import { setAuthModalOpen } from "../redux/features/authModalSlice";
 import { useTranslation } from "react-i18next";
+import { Eye, EyeOff } from "lucide-react";
 
 const PasswordUpdate = () => {
   const [onRequest, setOnRequest] = useState(false);
@@ -19,6 +26,9 @@ const PasswordUpdate = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslation();
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   const form = useFormik({
     initialValues: {
@@ -36,7 +46,7 @@ const PasswordUpdate = () => {
       confirmNewPassword: Yup.string()
         .oneOf(
           [Yup.ref("newPassword")],
-          t("validation.confirmNewPassword_match")
+          t("validation.confirmNewPassword_match"),
         )
         .min(1, t("validation.confirmNewPassword_min"))
         .required(t("validation.confirmNewPassword_required")),
@@ -51,7 +61,17 @@ const PasswordUpdate = () => {
     const { response, error } = await userApi.passwordUpdate(values);
     setOnRequest(false);
 
-    if (error) toast.error(error.message);
+    if (error) {
+      const errorMessage = error.errorCode;
+
+      if (typeof errorMessage === "string") {
+        toast.error(t(`error_code.${errorMessage}`));
+      } else {
+        Object.entries(errorMessage).forEach(([key, value]) => {
+          toast.error(t(`dto_validation_error.${value}`));
+        });
+      }
+    }
 
     if (response) {
       form.resetForm();
@@ -81,7 +101,7 @@ const PasswordUpdate = () => {
         >
           <Stack spacing={2}>
             <TextField
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               name="password"
               fullWidth
@@ -92,9 +112,27 @@ const PasswordUpdate = () => {
                 form.touched.password && form.errors.password !== undefined
               }
               helperText={form.touched.password && form.errors.password}
+              slotProps={{
+                input: {
+                  readOnly: false,
+                  onCopy: (e) => e.preventDefault(),
+                  onCut: (e) => e.preventDefault(),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        type="button"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        edge="end"
+                      >
+                        {showPassword ? <EyeOff /> : <Eye />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
             />
             <TextField
-              type="password"
+              type={showNewPassword ? "text" : "password"}
               placeholder="New password"
               name="newPassword"
               fullWidth
@@ -106,9 +144,27 @@ const PasswordUpdate = () => {
                 form.errors.newPassword !== undefined
               }
               helperText={form.touched.newPassword && form.errors.newPassword}
+              slotProps={{
+                input: {
+                  readOnly: false,
+                  onCopy: (e) => e.preventDefault(),
+                  onCut: (e) => e.preventDefault(),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        type="button"
+                        onClick={() => setShowNewPassword((prev) => !prev)}
+                        edge="end"
+                      >
+                        {showNewPassword ? <EyeOff /> : <Eye />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
             />
             <TextField
-              type="password"
+              type={showNewPassword ? "text" : "password"}
               placeholder="Confirm new password"
               name="confirmNewPassword"
               fullWidth

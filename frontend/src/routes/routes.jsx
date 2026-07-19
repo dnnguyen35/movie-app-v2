@@ -7,6 +7,8 @@ import MediaSearch from "../pages/MediaSearch";
 import PasswordUpdate from "../pages/PasswordUpdate";
 import ReviewList from "../pages/ReviewList";
 import ProtectedPage from "../components/common/ProtectedPage";
+import MediaStream from "../pages/MediaStream";
+import Testpage from "../pages/Testpage";
 
 export const routesGen = {
   home: "/",
@@ -17,6 +19,7 @@ export const routesGen = {
   favoriteList: "/favorites",
   reviewList: "/reviews",
   passwordUpdate: "password-update",
+  mediaStream: (mediaType, mediaId) => `/${mediaType}/${mediaId}/stream`,
 };
 
 const routes = [
@@ -69,6 +72,15 @@ const routes = [
   {
     path: "/:mediaType/:mediaId",
     element: <MediaDetail />,
+  },
+  {
+    path: "/:mediaType/:mediaId/stream",
+    element: <MediaStream />,
+    state: "media.stream",
+  },
+  {
+    path: "/test-player",
+    element: <Testpage />,
   },
 ];
 

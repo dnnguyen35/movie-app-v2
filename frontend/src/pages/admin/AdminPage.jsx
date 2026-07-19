@@ -55,11 +55,12 @@ const AdminPage = () => {
 
   const onTotalReviewsChange = (reviewsNum) => setTotalReviewsCount(reviewsNum);
 
-  if (!user || !user.isAdmin) return <DontHavePermission />;
+  if (!user || !user.roles.includes("ROLE_ADMIN"))
+    return <DontHavePermission />;
 
   return (
     <>
-      <Header displayName={user?.displayName} />
+      <Header displayName={user?.name} />
       <StatsDashboard
         totalUsers={totalUsersCount}
         totalReviews={totalReviewsCount}

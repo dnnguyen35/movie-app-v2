@@ -32,7 +32,7 @@ const ReviewsTable = ({ listReviewsData, onTotalReviewsChange }) => {
     if (response) {
       toast.success("Deleted review successfully");
       const newListReviews = listReviews.filter(
-        (review) => review.id !== reviewId
+        (review) => review.id !== reviewId,
       );
       setListReviews([...newListReviews]);
       onTotalReviewsChange(newListReviews.length);
@@ -63,7 +63,7 @@ const ReviewsTable = ({ listReviewsData, onTotalReviewsChange }) => {
       <Table stickyHeader>
         <TableHead>
           <TableRow>
-            <TableCell sx={{ color: "primary.main" }}>User</TableCell>
+            <TableCell sx={{ color: "primary.main" }}>Username</TableCell>
             <TableCell sx={{ color: "primary.main" }}>Content</TableCell>
             <TableCell sx={{ color: "primary.main" }}>Movie Title</TableCell>
             <TableCell sx={{ color: "primary.main" }}>Created At</TableCell>
@@ -73,7 +73,7 @@ const ReviewsTable = ({ listReviewsData, onTotalReviewsChange }) => {
         <TableBody>
           {listReviews.map((review) => (
             <TableRow key={review.id}>
-              <TableCell>{review.user.username}</TableCell>
+              <TableCell>{review.user.name}</TableCell>
               <TableCell>
                 {" "}
                 <Tooltip

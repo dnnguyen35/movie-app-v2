@@ -39,9 +39,7 @@ const UsersTable = ({ listUsersData, isLoading }) => {
     if (response) {
       toast.success("Locked user successfully");
       setListUsers((prevUsers) =>
-        prevUsers.map((userr) =>
-          userr.id === user.id ? { ...userr, isActive: false } : userr
-        )
+        prevUsers.map((u) => (u.id === user.id ? { ...u, active: false } : u)),
       );
     }
   };
@@ -58,9 +56,7 @@ const UsersTable = ({ listUsersData, isLoading }) => {
     if (response) {
       toast.success("Unlocked user successfully");
       setListUsers((prevUsers) =>
-        prevUsers.map((user) =>
-          user.id === userId ? { ...user, isActive: true } : user
-        )
+        prevUsers.map((u) => (u.id === userId ? { ...u, active: true } : u)),
       );
     }
   };
@@ -88,7 +84,7 @@ const UsersTable = ({ listUsersData, isLoading }) => {
         <TableHead>
           <TableRow>
             <TableCell sx={{ color: "primary.main", fontWeight: "bold" }}>
-              Display Name
+              Email
             </TableCell>
             <TableCell sx={{ color: "primary.main", fontWeight: "bold" }}>
               Username
@@ -117,8 +113,8 @@ const UsersTable = ({ listUsersData, isLoading }) => {
           ) : (
             listUsers.map((user) => (
               <TableRow key={user.id}>
-                <TableCell>{user.displayName}</TableCell>
-                <TableCell>{user.username}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.name}</TableCell>
                 <TableCell>
                   {new Date(user.createdAt).toLocaleDateString()}
                 </TableCell>
@@ -127,9 +123,9 @@ const UsersTable = ({ listUsersData, isLoading }) => {
                 <TableCell>
                   <IconButton
                     onClick={() => onLockUserClick(user)}
-                    color={user.isActive ? "success" : "error"}
+                    color={user.active ? "success" : "error"}
                   >
-                    {user.isActive ? <LockOpen /> : <Lock />}
+                    {user.active ? <LockOpen /> : <Lock />}
                   </IconButton>
                 </TableCell>
               </TableRow>

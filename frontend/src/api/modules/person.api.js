@@ -1,15 +1,15 @@
 import publicClient from "../client/public.client.js";
 
 const personEndpoints = {
-  detail: ({ personId }) => `person/${personId}`,
-  medias: ({ personId }) => `person/${personId}/medias`,
+  detail: ({ personId }) => `persons/${personId}`,
+  medias: ({ personId }) => `persons/${personId}/medias`,
 };
 
 const personApi = {
   detail: async ({ personId }) => {
     try {
       const response = await publicClient.get(
-        personEndpoints.detail({ personId })
+        personEndpoints.detail({ personId }),
       );
 
       return { response };
@@ -21,7 +21,7 @@ const personApi = {
   medias: async ({ personId }) => {
     try {
       const response = await publicClient.get(
-        personEndpoints.medias({ personId })
+        personEndpoints.medias({ personId }),
       );
 
       return { response };

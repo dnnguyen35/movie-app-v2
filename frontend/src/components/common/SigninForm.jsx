@@ -1,5 +1,13 @@
 import { LoadingButton } from "@mui/lab";
-import { Box, Alert, Button, Stack, TextField } from "@mui/material";
+import {
+  Box,
+  Alert,
+  Button,
+  Stack,
+  TextField,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
 import { useFormik } from "formik";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -9,23 +17,29 @@ import userApi from "../../api/modules/user.api";
 import { setAuthModalOpen } from "../../redux/features/authModalSlice";
 import { setUser } from "../../redux/features/userSlice";
 import { useTranslation } from "react-i18next";
+import { EyeOff, Eye } from "lucide-react";
 
-const SigninForm = ({ switchAuthState }) => {
+const SigninForm = ({ switchAuthState, actionState }) => {
   const dispatch = useDispatch();
 
   const [isLoginRequest, setIsLoginRequest] = useState(false);
-  const [errorMessage, setErrorMessage] = useState();
+  const [errorMessage, setErrorMessage] = useState(null);
   const { t } = useTranslation();
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const signinForm = useFormik({
     initialValues: {
-      username: "",
+      email: "",
       password: "",
     },
     validationSchema: Yup.object({
-      username: Yup.string()
-        .min(5, t("validation.username_min"))
-        .required(t("validation.username_required")),
+      email: Yup.string()
+        .matches(
+          /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+          t("validation.email_invalid"),
+        )
+        .required(t("validation.email_required")),
       password: Yup.string()
         .min(1, t("validation.password_min"))
         .required(t("validation.password_required")),
@@ -46,7 +60,7 @@ const SigninForm = ({ switchAuthState }) => {
 
       if (error) {
         console.log(error.message);
-        setErrorMessage(error.message);
+        setErrorMessage(error?.data || error?.errorCode);
       }
     },
   });
@@ -55,21 +69,20 @@ const SigninForm = ({ switchAuthState }) => {
     <Box component="form" onSubmit={signinForm.handleSubmit}>
       <Stack spacing={3}>
         <TextField
-          type="text"
-          placeholder="Username"
-          name="username"
+          type="email"
+          placeholder="Email"
+          name="email"
           fullWidth
-          value={signinForm.values.username}
+          value={signinForm.values.email}
           onChange={signinForm.handleChange}
           color="success"
           error={
-            signinForm.touched.username &&
-            signinForm.errors.username !== undefined
+            signinForm.touched.email && signinForm.errors.email !== undefined
           }
-          helperText={signinForm.touched.username && signinForm.errors.username}
+          helperText={signinForm.touched.email && signinForm.errors.email}
         />
         <TextField
-          type="password"
+          type={showPassword ? "text" : "password"}
           placeholder="Password"
           name="password"
           fullWidth
@@ -81,6 +94,24 @@ const SigninForm = ({ switchAuthState }) => {
             signinForm.errors.password !== undefined
           }
           helperText={signinForm.touched.password && signinForm.errors.password}
+          slotProps={{
+            input: {
+              readOnly: false,
+              onCopy: (e) => e.preventDefault(),
+              onCut: (e) => e.preventDefault(),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    edge="end"
+                  >
+                    {showPassword ? <EyeOff /> : <Eye />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            },
+          }}
         />
       </Stack>
 
@@ -98,18 +129,35 @@ const SigninForm = ({ switchAuthState }) => {
         fullWidth
         sx={{ marginTop: 1 }}
         onClick={() => {
-          switchAuthState();
+          switchAuthState(actionState.signup);
         }}
       >
         {t("topbar.sign_up")}
       </Button>
-      {errorMessage && (
-        <Box sx={{ marginTop: 2 }}>
-          <Alert severity="warning" variant="outlined">
-            {t(errorMessage)}
-          </Alert>
-        </Box>
-      )}
+      <Button
+        fullWidth
+        sx={{ marginTop: 1 }}
+        onClick={() => switchAuthState(actionState.forgotPassword)}
+      >
+        {t("topbar.forgot_password")}
+      </Button>
+
+      {errorMessage &&
+        (typeof errorMessage === "string" ? (
+          <Box sx={{ mt: 2 }}>
+            <Alert severity="warning" variant="outlined">
+              {t(`error_code.${errorMessage}`)}
+            </Alert>
+          </Box>
+        ) : (
+          Object.entries(errorMessage).map(([key, value]) => (
+            <Box key={key} sx={{ mt: 2 }}>
+              <Alert severity="warning" variant="outlined">
+                {t(`dto_validation_error.${value}`)}
+              </Alert>
+            </Box>
+          ))
+        ))}
     </Box>
   );
 };

@@ -30,9 +30,9 @@ const UserMenu = () => {
             sx={{ cursor: "pointer", userSelect: "none" }}
             onClick={toggleMenu}
           >
-            {user.displayName.length > 5
-              ? `${user.displayName.slice(0, 5)}...`
-              : user.displayName}
+            {user?.name?.length > 5
+              ? `${user?.name?.slice(0, 5)}...`
+              : user?.name}
           </Typography>
 
           <Menu

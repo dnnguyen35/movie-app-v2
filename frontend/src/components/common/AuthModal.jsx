@@ -5,10 +5,14 @@ import { setAuthModalOpen } from "../../redux/features/authModalSlice";
 import Logo from "./Logo";
 import SigninForm from "./SigninForm";
 import SignupForm from "./SignupForm";
+import VerifyOtpForm from "./VerifyOtpForm";
+import ForgotPasswordForm from "./ForgotPasswordForm";
 
 const actionState = {
   signin: "signin",
   signup: "signup",
+  verifyOtp: "verifyOtp",
+  forgotPassword: "forgotPassword",
 };
 
 const AuthModal = () => {
@@ -18,13 +22,26 @@ const AuthModal = () => {
 
   const [action, setAction] = useState(actionState.signin);
 
+  const [authData, setAuthData] = useState({
+    email: "",
+    otpExpireAt: null,
+  });
+
   useEffect(() => {
-    if (authModalOpen) setAction(actionState.signin);
+    if (authModalOpen) {
+      setAction(actionState.signin);
+      setAuthData({
+        email: "",
+      });
+    }
   }, [authModalOpen]);
 
   const handleClose = () => dispatch(setAuthModalOpen(false));
 
-  const switchAuthState = (state) => setAction(state);
+  const switchAuthState = (state, data = {}) => {
+    setAuthData((prev) => ({ ...prev, ...data }));
+    setAction(state);
+  };
 
   return (
     <Modal open={authModalOpen} onClose={handleClose}>
@@ -53,17 +70,31 @@ const AuthModal = () => {
           <Box sx={{ textAlign: "center", marginBottom: "2rem" }}>
             <Logo />
           </Box>
-
           {action === actionState.signin && (
             <SigninForm
-              switchAuthState={() => switchAuthState(actionState.signup)}
+              switchAuthState={switchAuthState}
+              actionState={actionState}
             />
-          )}
+          )}{" "}
           {action === actionState.signup && (
             <SignupForm
-              switchAuthState={() => switchAuthState(actionState.signin)}
+              switchAuthState={switchAuthState}
+              actionState={actionState}
             />
-          )}
+          )}{" "}
+          {action === actionState.verifyOtp && (
+            <VerifyOtpForm
+              switchAuthState={switchAuthState}
+              actionState={actionState}
+              authData={authData}
+            />
+          )}{" "}
+          {action === actionState.forgotPassword && (
+            <ForgotPasswordForm
+              switchAuthState={switchAuthState}
+              actionState={actionState}
+            />
+          )}{" "}
         </Box>
       </Box>
     </Modal>

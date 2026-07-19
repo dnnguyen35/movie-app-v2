@@ -17,17 +17,6 @@ const MainLayout = () => {
   const { user } = useSelector((state) => state.user);
 
   useEffect(() => {
-    const authUser = async () => {
-      const { response, error } = await userApi.getInfo();
-
-      if (response) dispatch(setUser(user));
-      if (error) dispatch(setUser(null));
-    };
-
-    authUser();
-  }, [dispatch]);
-
-  useEffect(() => {
     const getFavorites = async () => {
       const { response, error } = await favoriteApi.getList();
 
