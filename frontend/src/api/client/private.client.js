@@ -25,6 +25,7 @@ const pushPromiseToQueue = (promise) => {
 
 const privateClient = axios.create({
   baseURL,
+  withCredentials: true,
   paramsSerializer: {
     encode: (params) => queryString.stringify(params),
   },
@@ -69,15 +70,15 @@ privateClient.interceptors.response.use(
         originalRequest._retry = true;
 
         try {
-          const refreshToken = sessionStorage.getItem("rftkn");
-
-          const response = await axios.post(`${baseURL}/auth/renew-token`, {
-            refreshToken,
-          });
+          const response = await axios.post(
+            `${baseURL}/auth/renew-token`,
+            null,
+            {
+              withCredentials: true,
+            },
+          );
 
           const { newAccessToken } = response.data.data;
-
-          console.log("newAccessToken", newAccessToken);
 
           sessionStorage.setItem("actkn", newAccessToken);
 
@@ -89,13 +90,19 @@ privateClient.interceptors.response.use(
         } catch (error) {
           processQueue(error, null);
 
-          sessionStorage.removeItem("actkn");
-          sessionStorage.removeItem("rftkn");
+          const errorCode = error.response?.data?.errorCode;
 
-          store.dispatch({
-            type: "User/setUser",
-            payload: null,
-          });
+          if (
+            errorCode === "EXPIRED_REFRESH_TOKEN" ||
+            errorCode === "INVALID_REFRESH_TOKEN"
+          ) {
+            sessionStorage.removeItem("actkn");
+
+            store.dispatch({
+              type: "User/setUser",
+              payload: null,
+            });
+          }
 
           return Promise.reject(error);
         } finally {
