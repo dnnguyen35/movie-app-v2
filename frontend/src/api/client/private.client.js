@@ -49,7 +49,7 @@ privateClient.interceptors.request.use((config) => {
 
 privateClient.interceptors.response.use(
   (response) => {
-    if (response && response.data) {
+    if (response?.data) {
       return response.data.data ? response.data.data : response.data;
     }
 
@@ -62,9 +62,10 @@ privateClient.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       error.response?.data?.errorCode === "EXPIRED_ACCESS_TOKEN" &&
-      !originalRequest._retry
+      !originalRequest?._retry
     ) {
       console.log("Refreshing access token...");
+
       if (!isRefreshingToken) {
         isRefreshingToken = true;
         originalRequest._retry = true;
@@ -124,7 +125,7 @@ privateClient.interceptors.response.use(
       });
     }
 
-    return Promise.reject(error.response?.data || error);
+    return Promise.reject(error.response?.data ?? error);
   },
 );
 

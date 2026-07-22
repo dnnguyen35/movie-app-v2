@@ -1,7 +1,7 @@
 import { Box, TextField } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 
-const OTP_LENGTH = 6;
+const OTP_LENGTH = process.env.REACT_APP_OTP_LENGTH;
 
 const OtpInput = ({ value = "", onChange }) => {
   const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));

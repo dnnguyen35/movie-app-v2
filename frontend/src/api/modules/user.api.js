@@ -9,6 +9,7 @@ const userEndpoints = {
   resetPassword: "/auth/reset-password",
   verifyOtp: "/auth/verify",
   resendOtp: "/auth/resend-otp",
+  logout: "/auth/logout",
 };
 
 const userApi = {
@@ -95,6 +96,16 @@ const userApi = {
       const response = await publicClient.post(userEndpoints.resendOtp, {
         email,
       });
+
+      return { response };
+    } catch (error) {
+      return { error };
+    }
+  },
+
+  logout: async () => {
+    try {
+      const response = await publicClient.post(userEndpoints.logout);
 
       return { response };
     } catch (error) {

@@ -15,15 +15,11 @@ export const userSlice = createSlice({
       if (action.payload === null) {
         sessionStorage.removeItem("actkn");
         sessionStorage.removeItem("user");
-        sessionStorage.removeItem("rftkn");
       } else {
         sessionStorage.setItem("user", JSON.stringify(action.payload.user));
 
         if (action.payload.accessToken)
           sessionStorage.setItem("actkn", action.payload.accessToken);
-
-        if (action.payload.refreshToken)
-          sessionStorage.setItem("rftkn", action.payload.refreshToken);
       }
 
       state.user = action.payload ? action.payload.user : null;

@@ -1,10 +1,7 @@
 import axios from "axios";
-import queryString from "query-string";
 import store from "../../redux/store";
 
 const baseURL = process.env.REACT_APP_VIDEOSOURCE_API_URL;
-
-console.log("baseURL", baseURL);
 
 const videoSourceClient = axios.create({
   baseURL,
@@ -24,6 +21,7 @@ videoSourceClient.interceptors.request.use((config) => {
   return {
     ...config,
     headers: {
+      ...config.headers,
       "Accept-Language": languageMode,
     },
     params: cleanParams,
@@ -32,7 +30,7 @@ videoSourceClient.interceptors.request.use((config) => {
 
 videoSourceClient.interceptors.response.use(
   (response) => {
-    if (response && response.data) {
+    if (response?.data) {
       return response.data.data ? response.data.data : response.data;
     }
 
@@ -40,7 +38,7 @@ videoSourceClient.interceptors.response.use(
   },
 
   (error) => {
-    throw error.response.data;
+    return Promise.reject(error.response?.data ?? error);
   },
 );
 

@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import menuConfigs from "../../configs/menu.configs";
 import { setUser } from "../../redux/features/userSlice";
 import { useTranslation } from "react-i18next";
+import userApi from "../../api/modules/user.api";
 
 const UserMenu = () => {
   const { user } = useSelector((state) => state.user);
@@ -20,7 +21,29 @@ const UserMenu = () => {
 
   const [anchorEl, setAnchorEl] = useState(null);
 
+  const [isLogoutRequest, setIsLogoutRequest] = useState(false);
+
   const toggleMenu = (e) => setAnchorEl(e.currentTarget);
+
+  const handleLogout = async () => {
+    if (isLogoutRequest) return;
+
+    setIsLogoutRequest(true);
+
+    const { response, error } = await userApi.logout();
+
+    setIsLogoutRequest(false);
+
+    if (response) {
+      sessionStorage.removeItem("actkn");
+      dispatch(setUser(null));
+      setAnchorEl(null);
+    }
+
+    if (error) {
+      console.log("Logout error", error);
+    }
+  };
   return (
     <>
       {user && (
@@ -61,7 +84,7 @@ const UserMenu = () => {
             ))}
             <ListItemButton
               sx={{ borderRadius: "10px" }}
-              onClick={() => dispatch(setUser(null))}
+              onClick={() => handleLogout()}
             >
               <ListItemIcon>
                 <LogoutOutlinedIcon />
