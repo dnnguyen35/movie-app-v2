@@ -71,7 +71,7 @@ const Footer = () => {
         {/* Copyright */}
         <Box mt={3}>
           <Typography variant="body2" fontSize={12}>
-            © 2025 dnnguyen - Sài Gòn - Việt Nam
+            made by dnnguyen
           </Typography>
         </Box>
       </Box>

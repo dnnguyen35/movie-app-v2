@@ -20,11 +20,8 @@ const videoSourceApi = {
         },
       );
 
-      console.log("videoSourceApi.getMediaSearch response:", response);
-
       return { response };
     } catch (error) {
-      console.log("videoSourceApi.getMediaSearch error:", error);
       return { error };
     }
   },
@@ -35,11 +32,8 @@ const videoSourceApi = {
         videoSourceEndpoints.getMediaVideo({ mediaSlug }),
       );
 
-      console.log("videoSourceApi.getMediaVideo response:", response);
-
       return { response };
     } catch (error) {
-      console.log("videoSourceApi.getMediaVideo error:", error);
       return { error };
     }
   },

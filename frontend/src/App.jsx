@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@mui/material/styles";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import themeConfigs from "./configs/theme.configs";
 import { ToastContainer } from "react-toastify";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -16,31 +16,9 @@ import AdminPage from "./pages/admin/AdminPage";
 import PageNotFound from "./pages/PageNotFound";
 import userApi from "./api/modules/user.api";
 import { setUser } from "./redux/features/userSlice";
-import { useEffect } from "react";
 
 const App = () => {
   const { themeMode } = useSelector((state) => state.themeMode);
-
-  const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.user);
-
-  useEffect(() => {
-    const initAuth = async () => {
-      const { response, error } = await userApi.getInfo();
-
-      if (response) {
-        dispatch(setUser({ user: response }));
-      }
-
-      if (error) {
-        return;
-      }
-    };
-
-    if (user === null) {
-      initAuth();
-    }
-  }, [dispatch]);
 
   return (
     <ThemeProvider theme={themeConfigs.custom({ mode: themeMode })}>

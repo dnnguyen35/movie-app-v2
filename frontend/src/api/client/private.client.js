@@ -64,8 +64,6 @@ privateClient.interceptors.response.use(
       error.response?.data?.errorCode === "EXPIRED_ACCESS_TOKEN" &&
       !originalRequest?._retry
     ) {
-      console.log("Refreshing access token...");
-
       if (!isRefreshingToken) {
         isRefreshingToken = true;
         originalRequest._retry = true;

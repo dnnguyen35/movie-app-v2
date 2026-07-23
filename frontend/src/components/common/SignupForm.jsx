@@ -82,7 +82,6 @@ const SignupForm = ({ switchAuthState, actionState }) => {
       }
 
       if (error) {
-        console.log(error.message);
         setErrorMessage(error?.data || error?.errorCode);
       }
     },

@@ -174,7 +174,6 @@ const ReviewList = () => {
               onClick={() => {
                 setLoadingReviews(true);
                 setTimeout(() => {
-                  console.log("page: ", page);
                   onLoadMore();
                   setLoadingReviews(false);
                 }, 1000);

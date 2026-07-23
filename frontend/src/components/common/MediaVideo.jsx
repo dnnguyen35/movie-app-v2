@@ -7,8 +7,6 @@ const MediaVideo = ({ video }) => {
   const iframeRef = useRef();
 
   useEffect(() => {
-    console.log("iframe");
-
     if (!iframeRef.current) return;
 
     const height = (iframeRef.current.offsetWidth * 9) / 16 + "px";

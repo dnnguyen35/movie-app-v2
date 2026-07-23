@@ -41,7 +41,6 @@ const UserMenu = () => {
     }
 
     if (error) {
-      console.log("Logout error", error);
     }
   };
   return (

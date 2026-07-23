@@ -100,8 +100,6 @@ const MediaStream = () => {
               mediaSlug: mediaSearchResponse.items[0].slug,
             });
 
-          console.log("sdsdsdsd", mediaVideoResponse.item.episodes);
-
           if (
             mediaVideoResponse &&
             mediaVideoResponse.item.episodes.length > 0 &&
