@@ -18,7 +18,7 @@ export const userSlice = createSlice({
       } else {
         sessionStorage.setItem("user", JSON.stringify(action.payload.user));
 
-        if (action.payload.accessToken)
+        if (action.payload?.accessToken)
           sessionStorage.setItem("actkn", action.payload.accessToken);
       }
 
