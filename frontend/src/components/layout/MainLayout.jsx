@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import userApi from "../../api/modules/user.api";
 import favoriteApi from "../../api/modules/favorite.api";
 import { setListFavorites, setUser } from "../../redux/features/userSlice";
+import AnnouncementBanner from "../common/AnnouncementBanner";
 
 const MainLayout = () => {
   const dispatch = useDispatch();
@@ -37,6 +38,9 @@ const MainLayout = () => {
       <AuthModal />
       {/* login modal */}
 
+      {/* announcement banner */}
+      <AnnouncementBanner />
+      {/* announcement banner */}
       <Box display="flex" minHeight="100vh">
         {/* header */}
         <Topbar />
@@ -48,7 +52,6 @@ const MainLayout = () => {
         </Box>
         {/* main */}
       </Box>
-
       {/* footer */}
       <Footer />
       {/* footer */}

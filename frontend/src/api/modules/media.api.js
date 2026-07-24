@@ -33,6 +33,7 @@ const mediaApi = {
       return { error };
     }
   },
+
   search: async ({ mediaType, query, page }) => {
     try {
       const response = await publicClient.get(

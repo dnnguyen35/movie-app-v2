@@ -4,6 +4,7 @@ const adminEndpoints = {
   usersStats: "/admin/users-stats",
   reviewsStats: "/admin/reviews-stats",
   moviesStats: "/admin/movies-stats",
+  sendNotification: "/admin/notify",
   lockUser: ({ userId }) => `/admin/lock/${userId}`,
   unLockUser: ({ userId }) => `/admin/unlock/${userId}`,
   removeUserReview: ({ reviewId }) => `/admin/reviews/${reviewId}`,
@@ -19,6 +20,7 @@ const adminApi = {
       return { error };
     }
   },
+
   getReviewsStats: async () => {
     try {
       const response = await privateClient.get(adminEndpoints.reviewsStats);
@@ -28,6 +30,7 @@ const adminApi = {
       return { error };
     }
   },
+
   getMoviesStats: async () => {
     try {
       const response = await privateClient.get(adminEndpoints.moviesStats);
@@ -37,6 +40,20 @@ const adminApi = {
       return { error };
     }
   },
+
+  sendNotification: async ({ notificationMessage }) => {
+    try {
+      const response = await privateClient.post(
+        adminEndpoints.sendNotification,
+        { notificationMessage },
+      );
+
+      return { response };
+    } catch (error) {
+      return { error };
+    }
+  },
+
   lockUser: async ({ userId }) => {
     try {
       const response = await privateClient.put(
@@ -48,6 +65,7 @@ const adminApi = {
       return { error };
     }
   },
+
   unLockUser: async ({ userId }) => {
     try {
       const response = await privateClient.put(
@@ -59,6 +77,7 @@ const adminApi = {
       return { error };
     }
   },
+
   removeUserReview: async ({ reviewId }) => {
     try {
       const response = await privateClient.delete(
