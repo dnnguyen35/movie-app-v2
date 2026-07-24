@@ -4,7 +4,7 @@ const adminEndpoints = {
   usersStats: "/admin/users-stats",
   reviewsStats: "/admin/reviews-stats",
   moviesStats: "/admin/movies-stats",
-  sendNotification: "/admin/notify",
+  postNotification: "/admin/notify",
   lockUser: ({ userId }) => `/admin/lock/${userId}`,
   unLockUser: ({ userId }) => `/admin/unlock/${userId}`,
   removeUserReview: ({ reviewId }) => `/admin/reviews/${reviewId}`,
@@ -41,10 +41,10 @@ const adminApi = {
     }
   },
 
-  sendNotification: async ({ notificationMessage }) => {
+  postNotification: async ({ notificationMessage }) => {
     try {
       const response = await privateClient.post(
-        adminEndpoints.sendNotification,
+        adminEndpoints.postNotification,
         { notificationMessage },
       );
 

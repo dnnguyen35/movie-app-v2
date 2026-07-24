@@ -9,16 +9,18 @@ import ReviewList from "../pages/ReviewList";
 import ProtectedPage from "../components/common/ProtectedPage";
 import MediaStream from "../pages/MediaStream";
 import Testpage from "../pages/Testpage";
+import NotificationPost from "../pages/NotificationPost";
 
 export const routesGen = {
   home: "/",
-  mediaList: (type) => `/${type}`,
-  mediaDetail: (type, id) => `/${type}/${id}`,
   mediaSearch: "/search",
-  person: (id) => `/person/${id}`,
   favoriteList: "/favorites",
   reviewList: "/reviews",
-  passwordUpdate: "password-update",
+  passwordUpdate: "/password-update",
+  notificationPost: "/notification-post",
+  person: (id) => `/person/${id}`,
+  mediaList: (type) => `/${type}`,
+  mediaDetail: (type, id) => `/${type}/${id}`,
   mediaStream: (mediaType, mediaId) => `/${mediaType}/${mediaId}/stream`,
 };
 
@@ -79,8 +81,13 @@ const routes = [
     state: "media.stream",
   },
   {
-    path: "/test-player",
-    element: <Testpage />,
+    path: "/notification-post",
+    element: (
+      <ProtectedPage>
+        <NotificationPost />
+      </ProtectedPage>
+    ),
+    state: "notification.post",
   },
 ];
 

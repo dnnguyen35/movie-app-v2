@@ -1,4 +1,5 @@
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import RateReviewOutlinedIcon from "@mui/icons-material/RateReviewOutlined";
 import {
   ListItemButton,
   ListItemIcon,
@@ -13,6 +14,7 @@ import menuConfigs from "../../configs/menu.configs";
 import { setUser } from "../../redux/features/userSlice";
 import { useTranslation } from "react-i18next";
 import userApi from "../../api/modules/user.api";
+import { routesGen } from "../../routes/routes";
 
 const UserMenu = () => {
   const { user } = useSelector((state) => state.user);
@@ -81,10 +83,28 @@ const UserMenu = () => {
                 />
               </ListItemButton>
             ))}
-            <ListItemButton
-              sx={{ borderRadius: "10px" }}
-              onClick={() => handleLogout()}
-            >
+
+            {user && user.roles.includes("ROLE_ADMIN") && (
+              <ListItemButton
+                component={Link}
+                to={routesGen.notificationPost}
+                onClick={() => setAnchorEl(null)}
+              >
+                <ListItemIcon>
+                  <RateReviewOutlinedIcon />
+                </ListItemIcon>
+                <ListItemText
+                  disableTypography
+                  primary={
+                    <Typography textTransform="uppercase">
+                      {t("user.post_notification")}
+                    </Typography>
+                  }
+                />
+              </ListItemButton>
+            )}
+
+            <ListItemButton onClick={() => handleLogout()}>
               <ListItemIcon>
                 <LogoutOutlinedIcon />
               </ListItemIcon>

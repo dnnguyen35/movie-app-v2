@@ -39,7 +39,8 @@
     "favorites": "yêu thích",
     "reviews": "đánh giá",
     "password update": "đổi mật khẩu",
-    "sign_out": "thoát"
+    "sign_out": "thoát",
+    "post_notification": "đăng thông báo"
   },
   "homepage": {
     "popular_movies": "phim nổi bật",
@@ -106,7 +107,9 @@
     "confirmNewPassword_required": "Vui lòng nhập lại mật khẩu mới",
 
     "email_required": "Email là bắt buộc",
-    "email_invalid": "Email sai định dạng"
+    "email_invalid": "Email sai định dạng",
+
+    "notification_message_required": "Không được để trống"
   },
   "update_password": "đổi mật khẩu",
   "success": {
@@ -115,7 +118,8 @@
     "add_comment": "Bình luận thành công",
     "delete_comment": "Xóa bình luận thành công",
     "sign_in": "Đăng nhập thành công",
-    "sign_up": "Đăng ký thành công"
+    "sign_up": "Đăng ký thành công",
+    "post_notification_success": "Đăng thông báo thành công"
   },
   "please_login": "Hãy đăng nhập để xem phần này",
   "Ooops! Something wrong": "Có lỗi xảy ra",

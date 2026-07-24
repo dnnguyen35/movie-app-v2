@@ -39,7 +39,8 @@
     "favorites": "favorites",
     "reviews": "reviews",
     "password update": "password update",
-    "sign_out": "sign out"
+    "sign_out": "sign out",
+    "post_notification": "post notification"
   },
   "homepage": {
     "popular_movies": "popular movies",
@@ -106,7 +107,9 @@
     "confirmNewPassword_required": "NewPassword is required",
 
     "email_required": "Email is required",
-    "email_invalid": "Email format invalid"
+    "email_invalid": "Email format invalid",
+
+    "notification_message_required": "Message is required"
   },
   "update_password": "update password",
   "success": {
@@ -115,7 +118,8 @@
     "add_comment": "Comment successfully",
     "delete_comment": "Delete comment successfully",
     "sign_in": "Sign in successfully",
-    "sign_up": "Sign up successfully"
+    "sign_up": "Sign up successfully",
+    "post_notification_success": "Post notification successfully"
   },
   "please_login": "Please login to see this content",
   "Ooops! Something wrong": "Ooops! Something wrong",

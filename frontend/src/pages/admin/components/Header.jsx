@@ -27,12 +27,12 @@ const Header = ({ displayName }) => {
             </Typography>
           </Link>
 
-          <Box sx={{ display: { xs: "block", md: "block" } }}>
+          <Box>
             <Typography variant="h4" fontWeight="bold">
-              Manager
+              Admin
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Cristiano Ronaldo is my goattttttt, love youuuuu
+              Please hire me
             </Typography>
           </Box>
         </Box>

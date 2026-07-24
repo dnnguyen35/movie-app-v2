@@ -29,7 +29,7 @@ const AnnouncementBanner = () => {
 
       setMessage(event.data);
 
-      timer = setTimeout(() => {
+      const timer = setTimeout(() => {
         setIsVisible(true);
       }, 50);
 
@@ -73,7 +73,7 @@ const AnnouncementBanner = () => {
     <Box
       sx={{
         position: "fixed",
-        top: 52,
+        top: 54,
         left: 0,
         right: 0,
         width: { xs: "90%", sm: "70%", md: "70%" },
@@ -111,7 +111,7 @@ const AnnouncementBanner = () => {
             color: "white",
             fontWeight: 600,
             fontSize: { xs: 14, sm: 16, md: 17 },
-            animation: `marquee ${animationDuration} linear forwards 0.5s 3`,
+            animation: `marquee ${animationDuration} linear forwards 1s 3`,
             willChange: "transform",
             paddingLeft: "100%",
 
