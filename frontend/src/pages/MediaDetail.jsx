@@ -65,6 +65,8 @@ const MediaDetail = () => {
   const [mediaSourceStatus, setMediaSourceStatus] = useState(false);
   const [mediaSource, setMediaSource] = useState(null);
 
+  const [getMediaError, setGetMediaError] = useState(false);
+
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
@@ -126,15 +128,19 @@ const MediaDetail = () => {
         }
       }
 
-      dispatch(setGlobalLoading(false));
-
       if (response) {
         setMedia(response);
         setIsFavorite(response.isFavorite);
         setGenres(response.detail.genres.splice(0, 2));
+        setGetMediaError(false);
       }
 
-      if (error) toast.error(error.message);
+      if (error) {
+        toast.error(t(error.message));
+        setGetMediaError(true);
+      }
+
+      dispatch(setGlobalLoading(false));
     };
 
     if (tmdbConfigs.mediaType.hasOwnProperty(mediaType) && !isNaN(mediaId))
@@ -214,257 +220,263 @@ const MediaDetail = () => {
     return <PageNotFound />;
   }
 
-  return media ? (
-    <>
-      <ImageHeader
-        imgPath={tmdbConfigs.backdropPath(
-          media.detail.backdrop_path || media.detail.poster_path,
-        )}
-      />
-      <Box
-        sx={{
-          color: "primary.contrastText",
-          ...uiConfigs.style.mainContent,
-        }}
-      >
-        {/* media content */}
+  if (!media && !getMediaError) return null;
+
+  if (!media && getMediaError) return <PageNotFound />;
+
+  return (
+    media && (
+      <>
+        <ImageHeader
+          imgPath={tmdbConfigs.backdropPath(
+            media.detail.backdrop_path || media.detail.poster_path,
+          )}
+        />
         <Box
           sx={{
-            marginTop: { xs: "-10rem", md: "-15rem", lg: "-20rem" },
+            color: "primary.contrastText",
+            ...uiConfigs.style.mainContent,
           }}
         >
+          {/* media content */}
           <Box
             sx={{
-              display: "flex",
-              flexDirection: { md: "row", xs: "column" },
+              marginTop: { xs: "-10rem", md: "-15rem", lg: "-20rem" },
             }}
           >
-            {/* poster */}
             <Box
               sx={{
-                width: { xs: "70%", sm: "50%", md: "40%" },
-                margin: { xs: "0 auto 2rem", md: "0 2rem 0 0" },
+                display: "flex",
+                flexDirection: { md: "row", xs: "column" },
               }}
             >
+              {/* poster */}
               <Box
                 sx={{
-                  borderRadius: "2%",
-                  paddingTop: "140%",
-                  ...uiConfigs.style.backgroundImage(
-                    tmdbConfigs.posterPath(
-                      media.detail.poster_path || media.detail.backdrop_path,
-                    ),
-                  ),
+                  width: { xs: "70%", sm: "50%", md: "40%" },
+                  margin: { xs: "0 auto 2rem", md: "0 2rem 0 0" },
                 }}
-              />
-            </Box>
-            {/* poster */}
+              >
+                <Box
+                  sx={{
+                    borderRadius: "2%",
+                    paddingTop: "140%",
+                    ...uiConfigs.style.backgroundImage(
+                      tmdbConfigs.posterPath(
+                        media.detail.poster_path || media.detail.backdrop_path,
+                      ),
+                    ),
+                  }}
+                />
+              </Box>
+              {/* poster */}
 
-            {/* media info */}
-            <Box
-              sx={{
-                width: { xs: "100%", md: "60%" },
-                color: "text.primary",
-              }}
-            >
-              <Stack spacing={5}>
-                <Stack
-                  direction={"column"}
-                  spacing={1}
-                  alignItems={"flex-start"}
-                >
-                  {/* title */}
+              {/* media info */}
+              <Box
+                sx={{
+                  width: { xs: "100%", md: "60%" },
+                  color: "text.primary",
+                }}
+              >
+                <Stack spacing={5}>
+                  <Stack
+                    direction={"column"}
+                    spacing={1}
+                    alignItems={"flex-start"}
+                  >
+                    {/* title */}
+                    <Typography
+                      variant="h4"
+                      fontSize={{ xs: "2rem", md: "2rem", lg: "3rem" }}
+                      fontWeight="700"
+                      sx={{ ...uiConfigs.style.typoLines(1, "left") }}
+                    >
+                      {languageMode === languageModes.vi
+                        ? `${mediaSource?.item.name || media.detail.title || media.detail.name}`
+                        : `${media.detail.title || media.detail.name}`}
+                    </Typography>
+
+                    <Typography
+                      variant="h4"
+                      fontSize={{ xs: "1rem", md: "1rem", lg: "2rem" }}
+                      fontWeight="200"
+                      sx={{ ...uiConfigs.style.typoLines(1, "left") }}
+                    >
+                      {`${mediaSource?.item.origin_name || media.detail.original_title || media.detail.original_name}`}
+                    </Typography>
+                    {/* title */}
+                  </Stack>
+
+                  {/* rate and genres */}
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    {/* rate */}
+                    <CircularRate value={media.detail.vote_average} />
+                    {/* rate */}
+                    <Divider orientation="vertical" />
+                    {/* genres */}
+                    {genres.map((genre, index) => (
+                      <Chip
+                        label={genre.name}
+                        variant="filled"
+                        color="primary"
+                        key={index}
+                      />
+                    ))}
+                    {/* genres */}
+                  </Stack>
+                  {/* rate and genres */}
+
+                  {/* release date and duration time*/}
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <CalendarMonthIcon color="primary" />
+                      <Chip
+                        label={
+                          mediaType === tmdbConfigs.mediaType.movie
+                            ? media?.detail?.release_date?.split("-")[0]
+                            : media?.detail?.first_air_date?.split("-")[0]
+                        }
+                        variant="filled"
+                        color="primary"
+                      />
+                    </Stack>
+
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <TimelapseIcon color="primary" />
+                      <Chip
+                        label={convertMinuteToHour(
+                          mediaSource?.item?.time?.split(" ")[0] ||
+                            media?.detail?.runtime ||
+                            media?.detail?.episode_run_time[0],
+                        )}
+                        variant="filled"
+                        color="primary"
+                      />
+                    </Stack>
+                  </Stack>
+                  {/* release date and duration time*/}
+
+                  {/* overview */}
                   <Typography
-                    variant="h4"
-                    fontSize={{ xs: "2rem", md: "2rem", lg: "3rem" }}
-                    fontWeight="700"
-                    sx={{ ...uiConfigs.style.typoLines(1, "left") }}
+                    variant="body1"
+                    sx={{ ...uiConfigs.style.typoLines(5) }}
                   >
                     {languageMode === languageModes.vi
-                      ? `${mediaSource?.item.name || media.detail.title || media.detail.name}`
-                      : `${media.detail.title || media.detail.name}`}
+                      ? `${
+                          mediaSource?.item?.content
+                            ?.replace(/<\/?[^>]+(>|$)/g, "")
+                            ?.replaceAll("&quot;", '"')
+                            ?.replaceAll("&amp;", "&")
+                            ?.replaceAll("&#039;", "'")
+                            ?.replaceAll("&apos;", "'") || media.detail.overview
+                        }`
+                      : media.detail.overview}
                   </Typography>
+                  {/* overview */}
 
-                  <Typography
-                    variant="h4"
-                    fontSize={{ xs: "1rem", md: "1rem", lg: "2rem" }}
-                    fontWeight="200"
-                    sx={{ ...uiConfigs.style.typoLines(1, "left") }}
-                  >
-                    {`${mediaSource?.item.origin_name || media.detail.original_title || media.detail.original_name}`}
-                  </Typography>
-                  {/* title */}
-                </Stack>
-
-                {/* rate and genres */}
-                <Stack direction="row" spacing={1} alignItems="center">
-                  {/* rate */}
-                  <CircularRate value={media.detail.vote_average} />
-                  {/* rate */}
-                  <Divider orientation="vertical" />
-                  {/* genres */}
-                  {genres.map((genre, index) => (
-                    <Chip
-                      label={genre.name}
-                      variant="filled"
-                      color="primary"
-                      key={index}
-                    />
-                  ))}
-                  {/* genres */}
-                </Stack>
-                {/* rate and genres */}
-
-                {/* release date and duration time*/}
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <CalendarMonthIcon color="primary" />
-                    <Chip
-                      label={
-                        mediaType === tmdbConfigs.mediaType.movie
-                          ? media?.detail?.release_date?.split("-")[0]
-                          : media?.detail?.first_air_date?.split("-")[0]
+                  {/* buttons */}
+                  <Stack direction="row" spacing={1}>
+                    <LoadingButton
+                      variant="text"
+                      sx={{
+                        width: "max-content",
+                        "& .MuiButon-starIcon": { marginRight: "0" },
+                      }}
+                      size="large"
+                      startIcon={
+                        isFavorite ? (
+                          <FavoriteIcon />
+                        ) : (
+                          <FavoriteBorderOutlinedIcon />
+                        )
                       }
-                      variant="filled"
-                      color="primary"
+                      loadingPosition="start"
+                      loading={onRequest}
+                      onClick={onFavoriteClick}
                     />
+                    <Button
+                      variant="contained"
+                      sx={{ width: "max-content" }}
+                      size="large"
+                      startIcon={<PlayArrowIcon />}
+                      onClick={() => {
+                        if (!mediaSourceStatus) return;
+
+                        navigate(routesGen.mediaStream(mediaType, mediaId));
+                      }}
+                    >
+                      {mediaSourceStatus
+                        ? t("common.watch_now")
+                        : t("common.available_soon")}
+                    </Button>
                   </Stack>
+                  {/* buttons */}
 
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <TimelapseIcon color="primary" />
-                    <Chip
-                      label={convertMinuteToHour(
-                        mediaSource?.item?.time?.split(" ")[0] ||
-                          media?.detail?.runtime ||
-                          media?.detail?.episode_run_time[0],
-                      )}
-                      variant="filled"
-                      color="primary"
-                    />
-                  </Stack>
+                  {/* cast */}
+                  <Container header={t("mediadetail.cast")}>
+                    <CastSlide casts={media.credits.cast} />
+                  </Container>
+                  {/* cast */}
                 </Stack>
-                {/* release date and duration time*/}
-
-                {/* overview */}
-                <Typography
-                  variant="body1"
-                  sx={{ ...uiConfigs.style.typoLines(5) }}
-                >
-                  {languageMode === languageModes.vi
-                    ? `${
-                        mediaSource?.item?.content
-                          ?.replace(/<\/?[^>]+(>|$)/g, "")
-                          ?.replaceAll("&quot;", '"')
-                          ?.replaceAll("&amp;", "&")
-                          ?.replaceAll("&#039;", "'")
-                          ?.replaceAll("&apos;", "'") || media.detail.overview
-                      }`
-                    : media.detail.overview}
-                </Typography>
-                {/* overview */}
-
-                {/* buttons */}
-                <Stack direction="row" spacing={1}>
-                  <LoadingButton
-                    variant="text"
-                    sx={{
-                      width: "max-content",
-                      "& .MuiButon-starIcon": { marginRight: "0" },
-                    }}
-                    size="large"
-                    startIcon={
-                      isFavorite ? (
-                        <FavoriteIcon />
-                      ) : (
-                        <FavoriteBorderOutlinedIcon />
-                      )
-                    }
-                    loadingPosition="start"
-                    loading={onRequest}
-                    onClick={onFavoriteClick}
-                  />
-                  <Button
-                    variant="contained"
-                    sx={{ width: "max-content" }}
-                    size="large"
-                    startIcon={<PlayArrowIcon />}
-                    onClick={() => {
-                      if (!mediaSourceStatus) return;
-
-                      navigate(routesGen.mediaStream(mediaType, mediaId));
-                    }}
-                  >
-                    {mediaSourceStatus
-                      ? t("common.watch_now")
-                      : t("common.available_soon")}
-                  </Button>
-                </Stack>
-                {/* buttons */}
-
-                {/* cast */}
-                <Container header={t("mediadetail.cast")}>
-                  <CastSlide casts={media.credits.cast} />
-                </Container>
-                {/* cast */}
-              </Stack>
+              </Box>
+              {/* media info */}
             </Box>
-            {/* media info */}
           </Box>
+          {/* media content */}
+
+          {/* media trailers */}
+          <div>
+            <Container header={t("mediadetail.videos")}>
+              <MediaVideosSlide
+                videos={[...media.videos.results].splice(0, 5)}
+              />
+            </Container>
+          </div>
+          {/* media trailers */}
+
+          {/* media backdrop */}
+          {media.images.backdrops.length > 0 && (
+            <Container header={t("mediadetail.backdrops")}>
+              <BackdropSlide backdrops={media.images.backdrops} />
+            </Container>
+          )}
+          {/* media backdrop */}
+
+          {/* media posters */}
+          {media.images.posters.length > 0 && (
+            <Container header={t("mediadetail.posters")}>
+              <PosterSlide posters={media.images.posters} />
+            </Container>
+          )}
+          {/* media posters */}
+
+          {/* media reviews */}
+          <MediaReview
+            reviews={media.reviews}
+            media={media}
+            mediaType={mediaType}
+          />
+          {/* media reviews */}
+
+          {/* media recommendation */}
+          <Container header={t("mediadetail.you_may_like")}>
+            {media.recommend.results.length > 0 && (
+              <RecommendSlide
+                medias={media.recommend.results}
+                mediaType={mediaType}
+              />
+            )}
+            {media.recommend.results.length === 0 && (
+              <MediaSlide
+                mediaType={mediaType}
+                mediaCategory={tmdbConfigs.mediaCategory.top_rated}
+              />
+            )}
+          </Container>
+          {/* media recommendation */}
         </Box>
-        {/* media content */}
-
-        {/* media trailers */}
-        <div>
-          <Container header={t("mediadetail.videos")}>
-            <MediaVideosSlide videos={[...media.videos.results].splice(0, 5)} />
-          </Container>
-        </div>
-        {/* media trailers */}
-
-        {/* media backdrop */}
-        {media.images.backdrops.length > 0 && (
-          <Container header={t("mediadetail.backdrops")}>
-            <BackdropSlide backdrops={media.images.backdrops} />
-          </Container>
-        )}
-        {/* media backdrop */}
-
-        {/* media posters */}
-        {media.images.posters.length > 0 && (
-          <Container header={t("mediadetail.posters")}>
-            <PosterSlide posters={media.images.posters} />
-          </Container>
-        )}
-        {/* media posters */}
-
-        {/* media reviews */}
-        <MediaReview
-          reviews={media.reviews}
-          media={media}
-          mediaType={mediaType}
-        />
-        {/* media reviews */}
-
-        {/* media recommendation */}
-        <Container header={t("mediadetail.you_may_like")}>
-          {media.recommend.results.length > 0 && (
-            <RecommendSlide
-              medias={media.recommend.results}
-              mediaType={mediaType}
-            />
-          )}
-          {media.recommend.results.length === 0 && (
-            <MediaSlide
-              mediaType={mediaType}
-              mediaCategory={tmdbConfigs.mediaCategory.top_rated}
-            />
-          )}
-        </Container>
-        {/* media recommendation */}
-      </Box>
-    </>
-  ) : (
-    <PageNotFound />
+      </>
+    )
   );
 };
 

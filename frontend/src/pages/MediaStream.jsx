@@ -61,6 +61,8 @@ const MediaStream = () => {
   const [currentServer, setCurrentServer] = useState(null);
   const [currentEpisode, setCurrentEpisode] = useState(null);
 
+  const [getMediaError, setGetMediaError] = useState(false);
+
   const dispatch = useDispatch();
 
   const videoRef = useRef(null);
@@ -130,15 +132,19 @@ const MediaStream = () => {
         }
       }
 
-      dispatch(setGlobalLoading(false));
-
       if (response) {
         setMedia(response);
         setIsFavorite(response.isFavorite);
         setGenres(response.detail.genres.splice(0, 2));
+        setGetMediaError(false);
       }
 
-      if (error) toast.error(error.message);
+      if (error) {
+        toast.error(t(error.message));
+        setGetMediaError(true);
+      }
+
+      dispatch(setGlobalLoading(false));
     };
 
     if (tmdbConfigs.mediaType.hasOwnProperty(mediaType) && !isNaN(mediaId))
@@ -209,13 +215,12 @@ const MediaStream = () => {
     }
   };
 
-  if (
-    !tmdbConfigs.mediaType.hasOwnProperty(mediaType) ||
-    isNaN(mediaId) ||
-    !currentMediaSource
-  ) {
+  if (!tmdbConfigs.mediaType.hasOwnProperty(mediaType) || isNaN(mediaId))
     return <PageNotFound />;
-  }
+
+  if ((!media || !currentMediaSource) && !getMediaError) return null;
+
+  if ((!media || !currentMediaSource) && getMediaError) return <PageNotFound />;
 
   return (
     media &&

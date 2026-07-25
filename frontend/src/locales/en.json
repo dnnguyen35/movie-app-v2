@@ -112,6 +112,8 @@
     "notification_message_required": "Message is required"
   },
   "update_password": "update password",
+  "Movie not found": "Movie not found",
+  "Internal server error": "Internal server error",
   "success": {
     "add_favorite": "Add favorite successfully",
     "delete_favorite": "Delete favorite successfully",

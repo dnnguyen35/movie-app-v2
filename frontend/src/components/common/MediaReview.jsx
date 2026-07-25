@@ -8,6 +8,7 @@ import {
   TextField,
   Typography,
   CircularProgress,
+  Tooltip,
 } from "@mui/material";
 import { useEffect, useState, useRef } from "react";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
@@ -19,9 +20,12 @@ import Container from "./Container";
 import reviewApi from "../../api/modules/review.api";
 import TextAvatar from "./TextAvatar";
 import { useTranslation } from "react-i18next";
+import TaskAltOutlinedIcon from "@mui/icons-material/TaskAltOutlined";
 
 const ReviewItem = ({ review, onRemoved }) => {
   const { user } = useSelector((state) => state.user);
+
+  console.log("review detail", review);
 
   const { t } = useTranslation();
 
@@ -53,14 +57,59 @@ const ReviewItem = ({ review, onRemoved }) => {
     >
       <Stack direction="row" spacing={2}>
         {/* Avatar */}
-        <TextAvatar text={review.user?.name} />
+        <TextAvatar text={review?.user?.name} />
         {/* Avatar */}
 
         <Stack spacing={2} flexGrow={1}>
           <Stack spacing={1}>
-            <Typography variant="h6" fontWeight={700}>
-              {review.user?.displayName}
-            </Typography>
+            {review?.user?.name.length <= 20 ? (
+              <Typography
+                variant="h6"
+                fontWeight={700}
+                sx={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  maxWidth: "20ch",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {review?.user?.name}
+                {review?.user?.roles.includes("ROLE_ADMIN") && (
+                  <TaskAltOutlinedIcon
+                    sx={{ ml: 1, color: "primary.main", fontSize: "medium" }}
+                  />
+                )}
+              </Typography>
+            ) : (
+              <Tooltip
+                title={review?.user?.name || ""}
+                arrow
+                disableInteractive={!review?.user?.name}
+              >
+                <Typography
+                  variant="h6"
+                  fontWeight={700}
+                  sx={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    maxWidth: "20ch",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    cursor: "pointer",
+                  }}
+                >
+                  {review?.user?.name}
+                  {review?.user?.roles.includes("ROLE_ADMIN") && (
+                    <TaskAltOutlinedIcon
+                      sx={{ ml: 1, color: "primary.main" }}
+                    />
+                  )}
+                </Typography>
+              </Tooltip>
+            )}
             <Typography variant="caption">
               {dayjs(review.createdAt).format("DD-MM-YYYY HH:mm:ss")}
             </Typography>
@@ -68,7 +117,7 @@ const ReviewItem = ({ review, onRemoved }) => {
           <Typography variant="body1" textAlign="justify">
             {review.content}
           </Typography>
-          {user && user.id === review.user.id && (
+          {user && user.id === review?.user?.id && (
             <LoadingButton
               variant="contained"
               startIcon={<DeleteIcon />}
@@ -77,8 +126,8 @@ const ReviewItem = ({ review, onRemoved }) => {
               onClick={onRemove}
               sx={{
                 position: { xs: "absolute", md: "absolute" },
+                top: 35,
                 right: { xs: 0, md: "10px" },
-                marginTop: { xs: 2, md: 0 },
                 width: "max-content",
               }}
             >
@@ -232,9 +281,43 @@ const MediaReview = ({ reviews, media, mediaType }) => {
             <Stack direction="row" spacing={2}>
               <TextAvatar text={user?.name} />
               <Stack spacing={2} flexGrow={1}>
-                <Typography variant="h6" fontWeight={700}>
-                  {user.name}
-                </Typography>
+                {user?.name.length <= 20 ? (
+                  <Typography
+                    variant="h6"
+                    fontWeight={700}
+                    sx={{
+                      display: "inline-block",
+                      maxWidth: "20ch",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {user?.name}
+                  </Typography>
+                ) : (
+                  <Tooltip
+                    title={user?.name || ""}
+                    arrow
+                    disableInteractive={!user?.name}
+                  >
+                    <Typography
+                      variant="h6"
+                      fontWeight={700}
+                      sx={{
+                        display: "inline-block",
+                        maxWidth: "20ch",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {user?.name}
+                    </Typography>
+                  </Tooltip>
+                )}
                 <TextField
                   value={content}
                   onChange={(e) => setContent(e.target.value)}

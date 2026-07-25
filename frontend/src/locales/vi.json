@@ -112,6 +112,8 @@
     "notification_message_required": "Không được để trống"
   },
   "update_password": "đổi mật khẩu",
+  "Movie not found": "Không tìm thấy phim",
+  "Internal server error": "Lỗi máy chủ",
   "success": {
     "add_favorite": "Thêm vào yêu thích thành công",
     "delete_favorite": "Xóa khỏi yêu thích thành công",
