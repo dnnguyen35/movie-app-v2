@@ -5,6 +5,7 @@ import AutoSwiper from "./AutoSwiper";
 import { toast } from "react-toastify";
 import MediaItem from "./MediaItem";
 import { useSelector } from "react-redux";
+import MediaItemSkeleton from "./Skeletons/MediaItemSkeleton";
 
 const MediaSlide = ({ mediaType, mediaCategory }) => {
   const [medias, setMedias] = useState([]);
@@ -27,15 +28,17 @@ const MediaSlide = ({ mediaType, mediaCategory }) => {
 
   return (
     <AutoSwiper>
-      {medias && medias.length > 0 ? (
-        medias.map((media, index) => (
-          <SwiperSlide key={index}>
-            <MediaItem media={media} mediaType={mediaType} />
-          </SwiperSlide>
-        ))
-      ) : (
-        <p>No media found</p>
-      )}
+      {medias && medias.length > 0
+        ? medias.map((media, index) => (
+            <SwiperSlide key={index}>
+              <MediaItem media={media} mediaType={mediaType} />
+            </SwiperSlide>
+          ))
+        : Array.from({ length: 10 }).map((_, index) => (
+            <SwiperSlide key={index}>
+              <MediaItemSkeleton mediaType={mediaType} />
+            </SwiperSlide>
+          ))}
     </AutoSwiper>
   );
 };

@@ -25,6 +25,7 @@ import CircularRate from "./CircularRate";
 import tmdbConfigs from "../../api/configs/tmdb.configs";
 import genreApi from "../../api/modules/genre.api";
 import mediaApi from "../../api/modules/media.api";
+import HeroItemSkeleton from "./Skeletons/HeroItemSkeleton";
 
 const HeroSlide = ({ mediaType, mediaCategory }) => {
   const theme = useTheme();
@@ -94,7 +95,7 @@ const HeroSlide = ({ mediaType, mediaCategory }) => {
           disableOnInteraction: false,
         }}
       >
-        {movies &&
+        {movies && movies.length > 0 ? (
           movies.map((movie, index) => (
             <SwiperSlide key={index}>
               <Box
@@ -208,7 +209,10 @@ const HeroSlide = ({ mediaType, mediaCategory }) => {
                 </Box>
               </Box>
             </SwiperSlide>
-          ))}
+          ))
+        ) : (
+          <HeroItemSkeleton />
+        )}
       </Swiper>
     </Box>
   );

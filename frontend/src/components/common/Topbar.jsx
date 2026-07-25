@@ -42,11 +42,7 @@ const ScrollAppBar = ({ children, window }) => {
         : themeMode === themeModes.dark
           ? "primary.contrastText"
           : "text.primary",
-      backgroundColor: trigger
-        ? "background.paper"
-        : themeMode === themeModes.dark
-          ? "transparent"
-          : "background.paper",
+      backgroundColor: trigger ? "background.paper" : "transparent",
     },
   });
 };

@@ -26,15 +26,15 @@ const MediaItem = ({ media, mediaType }) => {
         media.poster_path ||
           media.backdrop_path ||
           media.profile_path ||
-          media.mediaPoster
-      )
+          media.mediaPoster,
+      ),
     );
 
     if (mediaType === tmdbConfigs.mediaType.movie) {
       setReleaseDate(media.release_date && media.release_date.split("-")[0]);
     } else {
       setReleaseDate(
-        media.first_air_date && media.first_air_date.split("-")[0]
+        media.first_air_date && media.first_air_date.split("-")[0],
       );
     }
 
@@ -57,7 +57,7 @@ const MediaItem = ({ media, mediaType }) => {
           overflow: "hidden",
           "&:hover .media-info": { opacity: 1, bottom: 0 },
           "&:hover .media-back-drop, &:hover .media-play-btn": { opacity: 1 },
-          color: "primary.constrastText",
+          color: "primary.contrastText",
         }}
       >
         {/* movie or tv show item */}
