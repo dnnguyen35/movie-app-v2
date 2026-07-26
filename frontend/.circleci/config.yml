@@ -1,0 +1,51 @@
+version: 2.1
+
+jobs:
+  build-and-deploy:
+    machine:
+      image: ubuntu-2204:current
+
+    steps:
+      - checkout
+
+      - run:
+          name: Build Docker image
+          command: |
+            docker build \
+              -f frontend/Dockerfile \
+              -t ${DOCKERHUB_USERNAME}/movie-v2-fe:${CIRCLE_SHA1} \
+              -t ${DOCKERHUB_USERNAME}/movie-v2-fe:latest \
+              frontend
+
+      - run:
+          name: Login to Docker Hub
+          command: |
+            echo "${DOCKERHUB_ACCESS_TOKEN}" | docker login \
+              -u "${DOCKERHUB_USERNAME}" \
+              --password-stdin
+
+      - run:
+          name: Push Docker image
+          command: |
+            docker push ${DOCKERHUB_USERNAME}/movie-v2-fe:${CIRCLE_SHA1}
+            docker push ${DOCKERHUB_USERNAME}/movie-v2-fe:latest
+
+      - run:
+          name: Deploy frontend to EC2
+          command: |
+            ssh -o StrictHostKeyChecking=no \
+              ${EC2_USER}@${EC2_HOST} "
+                cd /home/ubuntu &&
+                sed -i 's/^FRONTEND_TAG=.*/FRONTEND_TAG=${CIRCLE_SHA1}/' .env &&
+                docker compose pull frontend &&
+                docker compose up -d frontend &&
+                docker image prune -a -f
+              "
+
+workflows:
+  build-and-deploy:
+    jobs:
+      - build-and-deploy:
+          filters:
+            branches:
+              only: main
