@@ -30,6 +30,9 @@ jobs:
             docker push ${DOCKERHUB_USERNAME}/movie-v2-fe:${CIRCLE_SHA1}
             docker push ${DOCKERHUB_USERNAME}/movie-v2-fe:latest
 
+      - add_ssh_keys:
+          fingerprints: "SHA256:iTOCamk8NuBTC+80zyasKwTAIdIXhJZEwydbVj2VEgA"
+
       - run:
           name: Deploy frontend to EC2
           command: |
