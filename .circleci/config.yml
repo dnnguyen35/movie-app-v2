@@ -12,6 +12,9 @@ jobs:
           name: Build Docker image
           command: |
             docker build \
+              --build-arg REACT_APP_API_URL=${REACT_APP_API_URL} \
+              --build-arg REACT_APP_VIDEOSOURCE_API_URL=${REACT_APP_VIDEOSOURCE_API_URL} \
+              --build-arg REACT_APP_OTP_LENGTH=${REACT_APP_OTP_LENGTH} \
               -f frontend/Dockerfile \
               -t ${DOCKERHUB_USERNAME}/movie-v2-fe:${CIRCLE_SHA1} \
               -t ${DOCKERHUB_USERNAME}/movie-v2-fe:latest \
