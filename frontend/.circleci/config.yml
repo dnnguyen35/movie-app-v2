@@ -37,12 +37,14 @@ jobs:
           name: Deploy frontend to EC2
           command: |
             ssh -o StrictHostKeyChecking=no \
+              -o PubkeyAcceptedKeyTypes=+ssh-rsa \
               ${EC2_USER}@${EC2_HOST} "
                 cd /home/ubuntu &&
                 sed -i 's/^FRONTEND_TAG=.*/FRONTEND_TAG=${CIRCLE_SHA1}/' .env &&
-                docker compose pull frontend &&
-                docker compose up -d frontend &&
-                docker image prune -a -f
+                sudo docker compose pull frontend &&
+                sudo docker compose up -d frontend &&
+                sudo docker image prune -a -f
+                sudo docker system prune -af
               "
 
 workflows:
