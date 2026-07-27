@@ -179,6 +179,12 @@ const MediaPlayer = ({ videoUrl, mediaThumbUrl }) => {
         borderRadius: "1%",
         overflow: "hidden",
         boxShadow: 3,
+
+        transform: "translate3d(0, 0, 0)",
+        WebkitTransform: "translate3d(0, 0, 0)",
+        backfaceVisibility: "hidden",
+        WebkitBackfaceVisibility: "hidden",
+        isolation: "isolate",
       }}
     >
       <Box

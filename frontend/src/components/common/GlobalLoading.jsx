@@ -33,7 +33,7 @@ const GlobalLoading = () => {
         sx={{
           opacity: isLoading ? 1 : 0,
           pointerEvents: "none",
-          transition: "all 0.3s ease-in-out",
+          transition: "opacity 0.3s ease-in-out",
           position: "fixed",
           width: "100vw",
           height: "100vh",
