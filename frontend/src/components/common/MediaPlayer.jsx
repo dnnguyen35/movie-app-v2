@@ -130,15 +130,45 @@ const MediaPlayer = ({ videoUrl, mediaThumbUrl }) => {
   }, []);
 
   useEffect(() => {
-    if (artPlayerInstanceRef.current) {
-      if (videoUrl) {
-        artPlayerInstanceRef.current.url = videoUrl;
-      }
+    const artPlayer = artPlayerInstanceRef.current;
 
-      if (mediaThumbUrl) {
-        artPlayerInstanceRef.current.poster = mediaThumbUrl;
+    let timer;
+
+    if (artPlayer) {
+      if (videoUrl) {
+        setIsVideoMetadataLoaded(false);
+
+        artPlayer.pause();
+
+        artPlayer.url = videoUrl;
+
+        if (mediaThumbUrl) {
+          artPlayer.poster = mediaThumbUrl;
+          artPlayer.template.$poster.style.backgroundImage = `url(${mediaThumbUrl})`;
+          artPlayer.template.$poster.style.display = "block";
+        }
+
+        artPlayer.once("video:canplay", () => {
+          timer = setTimeout(() => {
+            const player = artPlayer.template.$player;
+
+            if (!player) return;
+
+            player.classList.remove("art-state-started", "art-state-played");
+
+            player.classList.add("art-mask-show");
+
+            artPlayer.video.currentTime = 0;
+          }, 0);
+        });
       }
     }
+
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
   }, [videoUrl]);
   return (
     <Box
@@ -165,6 +195,8 @@ const MediaPlayer = ({ videoUrl, mediaThumbUrl }) => {
             inset: 0,
             zIndex: 9999,
             cursor: "wait",
+            backgroundImage: `url(${mediaThumbUrl})`,
+            backgroundSize: "cover",
             pointerEvents: "auto",
           }}
         />

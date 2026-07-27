@@ -10,13 +10,21 @@ const GlobalLoading = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    let timer;
+
     if (globalLoading) {
       setIsLoading(true);
     } else {
-      setTimeout(() => {
+      timer = setTimeout(() => {
         setIsLoading(false);
       }, 1000);
     }
+
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
   }, [globalLoading]);
 
   return (
@@ -25,7 +33,7 @@ const GlobalLoading = () => {
         sx={{
           opacity: isLoading ? 1 : 0,
           pointerEvents: "none",
-          transition: "all .3s ease",
+          transition: "opacity 0.3s ease-in-out",
           position: "fixed",
           width: "100vw",
           height: "100vh",

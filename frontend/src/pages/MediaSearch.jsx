@@ -123,7 +123,7 @@ const MediaSearch = () => {
                   height="50vh"
                 >
                   <img
-                    src="/ronaldo_siu_siu.png"
+                    src="/search_icon.png"
                     alt="Search Placeholder"
                     width="150"
                     style={{ maxWidth: "100%" }}
@@ -140,7 +140,7 @@ const MediaSearch = () => {
                       display: "inline-block",
                     }}
                   >
-                    {!query ? "Siuuuuu" : t("mediasearch.not_found")}
+                    {!query ? "" : t("mediasearch.not_found")}
                   </Typography>
                 </Box>
               </Fade>

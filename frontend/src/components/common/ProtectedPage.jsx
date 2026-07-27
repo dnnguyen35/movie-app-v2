@@ -18,7 +18,7 @@ const PleaseLogin = () => {
         height="50vh"
       >
         <img
-          src="/ronaldo_siu_siu.png"
+          src="/404_error_animal.png"
           alt=""
           width="150"
           style={{ maxWidth: "100%" }}
