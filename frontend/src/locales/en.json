@@ -121,7 +121,8 @@
     "delete_comment": "Delete comment successfully",
     "sign_in": "Sign in successfully",
     "sign_up": "Sign up successfully",
-    "post_notification_success": "Post notification successfully"
+    "post_notification_success": "Post notification successfully",
+    "otp_sent": "Check OTP in email"
   },
   "please_login": "Please login to see this content",
   "Ooops! Something wrong": "Ooops! Something wrong",

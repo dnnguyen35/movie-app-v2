@@ -121,7 +121,8 @@
     "delete_comment": "Xóa bình luận thành công",
     "sign_in": "Đăng nhập thành công",
     "sign_up": "Đăng ký thành công",
-    "post_notification_success": "Đăng thông báo thành công"
+    "post_notification_success": "Đăng thông báo thành công",
+    "otp_sent": "Kiem tra OTP trong email"
   },
   "please_login": "Hãy đăng nhập để xem phần này",
   "Ooops! Something wrong": "Có lỗi xảy ra",
