@@ -1,92 +1,73 @@
-# Movie-TVShow-Trailer 🎬
+# Movie Streaming App 🎬
 
-### Watch movie trailers and explore new films, TV series!
+### Watch movies and TV series online!
 
-🔊 Watch trailers of the latest movies, TV series  
-📊 Browse movie or TV series details like genres, release date, and rating  
-🌐 Multi-language support to view the app in different languages  
-📝 Share reviews, add movies to favorite list, update password  
-🎥 Watch trailers directly from The Movie DB  
-🔍 Search for actors, directors, influencers  
-👨🏼‍💼 Admin dashboard to manage users, favorites list, and reviews
+- 🔊 Stream the latest movies and TV series.
+- 📊 Browse movie and TV series details, including genres, release date, and ratings.
+- 🌐 Multi-language support for a localized viewing experience.
+- 📝 Write reviews, add movies to your favorites, and manage your account.
+- 🎥 Watch movies and TV series from integrated streaming sources.
+- 🔍 Search for movies, TV series, actors, and directors.
+- 👨🏼‍💼 Admin dashboard for managing users, favorites, and reviews.
 
-### Let's see here
+## Let's see here
 
 [**https://phimcuatoi.luontuoivui.xyz**](https://phimcuatoi.luontuoivui.xyz)
 
 ## Tech Stack
 
-### Backend:
+### Backend
 
-- ![Node.js](https://img.shields.io/badge/Node.js-18.20.4-green) Node.js
-- ![Express.js](https://img.shields.io/badge/Express.js-4.17.1-blue) Express.js
-- ![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-green) MongoDB (Mongoose)
-- ![JWT](https://img.shields.io/badge/JWT-auth-yellow) JSON Web Tokens
-- ![Axios](https://img.shields.io/badge/Axios-HTTP%20Client-blue) Axios
-- ![Validator](https://img.shields.io/badge/Express%20Validator-validation-orange) Express-validator
-- ![TMDB API](https://img.shields.io/badge/TMDB%20API-Movie%20Data-blue) TMDB API
+- ![Java](https://img.shields.io/badge/Java-21-ED8B00?logo=openjdk&logoColor=white) Java 21
+- ![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.0-6DB33F?logo=springboot&logoColor=white) Spring Boot 4
+- ![MySQL](https://img.shields.io/badge/MySQL-4479A1?logo=mysql&logoColor=white) MySQL
+- ![Spring Data JPA](https://img.shields.io/badge/Spring_Data_JPA-6DB33F?logo=spring&logoColor=white) Spring Data JPA
+- ![Hibernate](https://img.shields.io/badge/Hibernate-59666C?logo=hibernate&logoColor=white) Hibernate
+- ![Flyway](https://img.shields.io/badge/Flyway-CC0200?logo=flyway&logoColor=white) Flyway
+- ![HikariCP](https://img.shields.io/badge/HikariCP-00A8E8) HikariCP
+- ![Spring Security](https://img.shields.io/badge/Spring_Security-6DB33F?logo=springsecurity&logoColor=white) Spring Security
+- ![JWT](https://img.shields.io/badge/JWT-000000?logo=jsonwebtokens&logoColor=white) JSON Web Tokens
+- ![Jakarta Validation](https://img.shields.io/badge/Jakarta_Validation-%40Valid-FF6F00) Jakarta Validation (@Valid)
+- ![Redis](https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=white) Redis
+- ![TMDB API](https://img.shields.io/badge/TMDB_API-01D277?logo=themoviedatabase&logoColor=white) TMDB API
 
-### Frontend:
+### Frontend
 
-- ![React](https://img.shields.io/badge/React-18.2.0-blue) React
-- ![Redux Toolkit](https://img.shields.io/badge/Redux%20Toolkit-State%20Management-purple) Redux Toolkit
-- ![Axios](https://img.shields.io/badge/Axios-HTTP%20Client-green) Axios
-- ![Material UI](https://img.shields.io/badge/Material%20UI-Styling-blue) Material UI
-- ![Formik](https://img.shields.io/badge/Formik-Forms-yellow) Formik
-- ![Yup](https://img.shields.io/badge/Yup-Validation-purple) Yup
-- ![i18next](https://img.shields.io/badge/React--i18next-Internationalization-blue) React-i18next
+- ![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black) React
+- ![Redux Toolkit](https://img.shields.io/badge/Redux_Toolkit-764ABC?logo=redux&logoColor=white) Redux Toolkit
+- ![Axios](https://img.shields.io/badge/Axios-5A29E4?logo=axios&logoColor=white) Axios
+- ![Material UI](https://img.shields.io/badge/Material_UI-007FFF?logo=mui&logoColor=white) Material UI
+- ![Formik](https://img.shields.io/badge/Formik-2563EB) Formik
+- ![Yup](https://img.shields.io/badge/Yup-7C3AED) Yup
+- ![React-i18next](https://img.shields.io/badge/React--i18next-26A69A?logo=i18next&logoColor=white) React-i18next
 
-### Deployment:
+### Deployment
 
-- ![Docker](https://img.shields.io/badge/Docker-Containerization-blue) Docker
-- ![Nginx](https://img.shields.io/badge/Nginx-Reverse%20Proxy-green) Nginx
-- ![AWS EC2](https://img.shields.io/badge/AWS%20EC2-Hosting-orange) AWS EC2
-- ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-blue) GitHub Actions
+- ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white) Docker
+- ![Nginx](https://img.shields.io/badge/Nginx-009639?logo=nginx&logoColor=white) Nginx
+- ![AWS EC2](https://img.shields.io/badge/AWS_EC2-FF9900?logo=amazonaws&logoColor=white) AWS EC2
+- ![CircleCI](https://img.shields.io/badge/CircleCI-343434?logo=circleci&logoColor=white) CircleCI
 
 ## Installation
 
-### Clone repository:
+### Clone the repository
 
 ```bash
-git clone https://github.com/dnnguyen35/mern-movie-trailer.git
+git clone https://github.com/dnnguyen35/movie-app-v2.git
 ```
 
-### Setup .env file in backend:
+### Setup frontend environment
+
+Create a `.env` file inside the **frontend** directory:
 
 ```bash
-MONGODB_URL = mongodb+srv://...
-PORT = 5000
-TOKEN_SECRET = ...
-TMDB_BASE_URL = https://api.themoviedb.org/3/
-TMDB_KEY = ...
+REACT_APP_API_URL=http://localhost:8080/api/v1
 ```
 
-### Setup .env file in frontend:
+### Install dependencies and run the application
 
 ```bash
-REACT_APP_API_URL=http://localhost:5000/...
-```
-
-### Install dependencies:
-
-```bash
-cd backend
-npm install
-
 cd frontend
 yarn install
-```
-
-### Running
-
-#### 1. In backend:
-
-```bash
-npm run start
-```
-
-#### 2. In frontend:
-
-```bash
 yarn start
 ```

@@ -11,8 +11,8 @@ i18n.use(initReactI18next).init({
   },
   lng: localStorage.getItem("languageMode")
     ? localStorage.getItem("languageMode")
-    : "en",
-  fallbackLng: "en",
+    : "vi",
+  fallbackLng: "vi",
   interpolation: { escapeValue: false },
 });
 
