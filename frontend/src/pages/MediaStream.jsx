@@ -386,7 +386,7 @@ const MediaStream = () => {
                         label={convertMinuteToHour(
                           currentMediaSource?.item?.time?.split(" ")[0] ||
                             media?.detail?.runtime ||
-                            media?.detail?.episode_run_time[0],
+                            media?.detail?.episode_run_time?.[0] || "-",
                         )}
                         variant="filled"
                         color="primary"
