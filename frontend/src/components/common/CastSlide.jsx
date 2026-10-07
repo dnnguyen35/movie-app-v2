@@ -23,13 +23,13 @@ const CastSlide = ({ casts }) => {
       >
         {casts.map((cast, index) => (
           <SwiperSlide key={index}>
-            <Link to={routesGen.person(cast.id)}>
+            <Link to={routesGen.person(cast.id)} style={{ pointerEvents: "none" }}>
               <Box
                 sx={{
                   paddingTop: "120%",
                   color: "text.primary",
                   ...uiConfigs.style.backgroundImage(
-                    tmdbConfigs.posterPath(cast.profile_path)
+                    "https://res.cloudinary.com/duccdrxot/image/upload/v1758618113/ajji9rjgeo4a6tg7kx1j.jpg"
                   ),
                 }}
               >
@@ -47,7 +47,7 @@ const CastSlide = ({ casts }) => {
                     color="white"
                     sx={{ ...uiConfigs.style.typoLines(1, "left") }}
                   >
-                    {cast.name}
+                    {cast}
                   </Typography>
                 </Box>
               </Box>

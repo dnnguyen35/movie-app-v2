@@ -19,9 +19,9 @@ export const routesGen = {
   passwordUpdate: "/password-update",
   notificationPost: "/notification-post",
   person: (id) => `/person/${id}`,
-  mediaList: (type) => `/${type}`,
-  mediaDetail: (type, id) => `/${type}/${id}`,
-  mediaStream: (mediaType, mediaId) => `/${mediaType}/${mediaId}/stream`,
+  mediaList: (listType) => `/list/${listType}`,
+  mediaDetail: (mediaSlug, mediaGenre, mediaId) => `/detail/${mediaSlug}?mediaGenre=${mediaGenre}&mediaId=${mediaId}`,
+  mediaStream: (mediaSlug, mediaGenre, mediaId) => `/stream/${mediaSlug}?mediaGenre=${mediaGenre}&mediaId=${mediaId}`,
 };
 
 const routes = [
@@ -72,11 +72,11 @@ const routes = [
     element: <MediaList />,
   },
   {
-    path: "/:mediaType/:mediaId",
+    path: "/detail/:mediaSlug",
     element: <MediaDetail />,
   },
   {
-    path: "/:mediaType/:mediaId/stream",
+    path: "/stream/:mediaSlug",
     element: <MediaStream />,
     state: "media.stream",
   },

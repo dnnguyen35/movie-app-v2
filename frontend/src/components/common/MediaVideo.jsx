@@ -6,6 +6,8 @@ import tmdbConfigs from "../../api/configs/tmdb.configs";
 const MediaVideo = ({ video }) => {
   const iframeRef = useRef();
 
+  const videoId = new URL(video).searchParams.get("v");
+
   useEffect(() => {
     if (!iframeRef.current) return;
 
@@ -18,20 +20,18 @@ const MediaVideo = ({ video }) => {
     <Box
       sx={{
         height: "max-content",
-        border: video.key.includes("index.m3u8") ? "5px solid" : "none",
+        border: "none",
         borderColor: "primary.main",
       }}
     >
       <iframe
-        key={video.key}
+        key={video}
         src={
-          video.key.includes("embed.php")
-            ? video.key
-            : tmdbConfigs.youtubePath(video.key)
+          tmdbConfigs.youtubePath(videoId)
         }
         ref={iframeRef}
         width="100%"
-        title={video?.id ? video.id : "media-video"}
+        title={"media-video"}
         allowFullScreen
         allow="fullscreen"
         style={{ border: 0 }}

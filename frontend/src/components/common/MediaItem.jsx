@@ -1,11 +1,11 @@
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import tmdbConfigs from "../../api/configs/tmdb.configs";
 import uiConfigs from "../../configs/ui.configs";
+import tmdbConfigs from "../../api/configs/tmdb.configs";
 import { routesGen } from "../../routes/routes";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import CircularRate from "./CircularRate";
 import { useSelector } from "react-redux";
 import favoriteUtils from "../../utils/favorite.utils";
@@ -19,51 +19,46 @@ const MediaItem = ({ media, mediaType }) => {
   const [rate, setRate] = useState(null);
 
   useEffect(() => {
-    setTitle(media.title || media.name || media.mediaTitle);
+    setTitle(media.name);
 
-    setPosterPath(
-      tmdbConfigs.posterPath(
-        media.poster_path ||
-          media.backdrop_path ||
-          media.profile_path ||
-          media.mediaPoster,
-      ),
-    );
+    setPosterPath(media.poster_url);
 
-    if (mediaType === tmdbConfigs.mediaType.movie) {
-      setReleaseDate(media.release_date && media.release_date.split("-")[0]);
-    } else {
-      setReleaseDate(
-        media.first_air_date && media.first_air_date.split("-")[0],
-      );
-    }
+    setReleaseDate(media.year);
 
-    setRate(media.vote_average || media.mediaRate);
-  }, [media, mediaType]);
+    setRate(media.tmdb?.vote_average || 0);
+  }, [media]);
 
   return (
     <Link
       to={
         mediaType !== "people"
-          ? routesGen.mediaDetail(mediaType, media.mediaId || media.id)
+          ? routesGen.mediaDetail(media.slug, media.category[0]?.slug, media._id)
           : routesGen.person(media.id)
       }
     >
       <Box
         sx={{
-          ...uiConfigs.style.backgroundImage(posterPath),
+          ...uiConfigs.style.backgroundImage(tmdbConfigs.kkmovieImagePath(posterPath)),
           paddingTop: "160%",
           borderRadius: "2%",
           overflow: "hidden",
-          "&:hover .media-info": { opacity: 1, bottom: 0 },
-          "&:hover .media-back-drop, &:hover .media-play-btn": { opacity: 1 },
+          "&:hover .media-info": {
+            opacity: 1,
+            bottom: 0,
+          },
+          "&:hover .media-back-drop, &:hover .media-play-btn": {
+            opacity: 1,
+          },
           color: "primary.contrastText",
         }}
       >
         {/* movie or tv show item */}
         {mediaType !== "people" && (
           <>
-            {favoriteUtils.check({ listFavorites, mediaId: media.id }) && (
+            {favoriteUtils.check({
+              listFavorites,
+              mediaId: media._id,
+            }) && (
               <FavoriteIcon
                 color="primary"
                 sx={{
@@ -74,6 +69,7 @@ const MediaItem = ({ media, mediaType }) => {
                 }}
               />
             )}
+
             <Box
               className="media-back-drop"
               sx={{
@@ -88,6 +84,7 @@ const MediaItem = ({ media, mediaType }) => {
                   "linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0))",
               }}
             />
+
             <Button
               className="media-play-btn"
               variant="contained"
@@ -100,9 +97,12 @@ const MediaItem = ({ media, mediaType }) => {
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%,-50%)",
-                "& .MuiButton-startIcon": { marginRight: "-4px" },
+                "& .MuiButton-startIcon": {
+                  marginRight: "-4px",
+                },
               }}
             />
+
             <Box
               className="media-info"
               sx={{
@@ -117,11 +117,12 @@ const MediaItem = ({ media, mediaType }) => {
               }}
             >
               <Stack spacing={{ xs: 1, md: 2 }}>
-                {rate && <CircularRate value={rate} />}
+                {rate > 0 && <CircularRate value={rate} />}
 
                 <Typography color="primary.contrastText">
                   {releaseDate}
                 </Typography>
+
                 <Typography
                   variant="body1"
                   fontWeight={700}
@@ -153,7 +154,9 @@ const MediaItem = ({ media, mediaType }) => {
           >
             <Typography
               color="primary.contrastText"
-              sx={{ ...uiConfigs.style.typoLines(1, "left") }}
+              sx={{
+                ...uiConfigs.style.typoLines(1, "left"),
+              }}
             >
               {media.name}
             </Typography>

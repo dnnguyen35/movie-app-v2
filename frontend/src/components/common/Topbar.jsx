@@ -130,6 +130,7 @@ const Topbar = () => {
                 <Button
                   variant="contained"
                   onClick={() => dispatch(setAuthModalOpen(true))}
+                  sx={{ borderRadius: "20px" }}
                 >
                   {t("topbar.sign_in")}
                 </Button>

@@ -7,30 +7,29 @@ import MediaItem from "./MediaItem";
 import { useSelector } from "react-redux";
 import MediaItemSkeleton from "./Skeletons/MediaItemSkeleton";
 
-const MediaSlide = ({ mediaType, mediaCategory }) => {
+const MediaSlide = ({ mediaType, page }) => {
   const [medias, setMedias] = useState([]);
   const { languageMode } = useSelector((state) => state.languageMode);
 
   useEffect(() => {
     const getMedias = async () => {
-      const { response, error } = await mediaApi.getList({
-        mediaType,
-        mediaCategory,
-        page: 1,
+      const { response, error } = await mediaApi.getListByType({
+        type: mediaType,
+        page: page,
       });
 
-      if (response) setMedias(response.results);
+      if (response) setMedias(response?.data?.items);
       if (error) toast.error(error.message);
     };
 
     getMedias();
-  }, [mediaType, mediaCategory, languageMode]);
+  }, [mediaType, page, languageMode]);
 
   return (
     <AutoSwiper>
       {medias && medias.length > 0
         ? medias.map((media, index) => (
-            <SwiperSlide key={index}>
+            <SwiperSlide key={media._id}>
               <MediaItem media={media} mediaType={mediaType} />
             </SwiperSlide>
           ))

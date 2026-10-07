@@ -12,35 +12,35 @@ const HomePage = () => {
   return (
     <>
       <HeroSlide
-        mediaType={tmdbConfigs.mediaType.movie}
-        mediaCategory={tmdbConfigs.mediaCategory.popular}
+        mediaType={tmdbConfigs.mediaListType.phimchieurap}
+        page={1}
       />
       <Box marginTop="-4rem" sx={{ ...uiConfigs.style.mainContent }}>
         <Container header={t("homepage.popular_movies")}>
           <MediaSlide
-            mediaType={tmdbConfigs.mediaType.movie}
-            mediaCategory={tmdbConfigs.mediaCategory.popular}
+            mediaType={tmdbConfigs.mediaListType.phimle}
+            page={1}
           />
         </Container>
 
         <Container header={t("homepage.high_rate_movies")}>
           <MediaSlide
-            mediaType={tmdbConfigs.mediaType.movie}
-            mediaCategory={tmdbConfigs.mediaCategory.top_rated}
+            mediaType={tmdbConfigs.mediaListType.phimbo}
+            page={1}
           />
         </Container>
 
         <Container header={t("homepage.popular_show")}>
           <MediaSlide
-            mediaType={tmdbConfigs.mediaType.tv}
-            mediaCategory={tmdbConfigs.mediaCategory.popular}
+            mediaType={tmdbConfigs.mediaListType.tvshows}
+            page={1}
           />
         </Container>
 
         <Container header={t("homepage.recommended_show")}>
           <MediaSlide
-            mediaType={tmdbConfigs.mediaType.tv}
-            mediaCategory={tmdbConfigs.mediaCategory.top_rated}
+            mediaType={tmdbConfigs.mediaListType.phimhoathinh}
+            page={2}
           />
         </Container>
       </Box>

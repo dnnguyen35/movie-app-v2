@@ -6,7 +6,7 @@ const MediaVideosSlide = ({ videos }) => {
   return (
     <NavigationSwiper>
       {videos.map((video, index) => (
-        <SwiperSlide key={index}>
+        <SwiperSlide key={video}>
           <MediaVideo video={video} />
         </SwiperSlide>
       ))}

@@ -140,7 +140,7 @@ const ReviewItem = ({ review, onRemoved }) => {
   );
 };
 
-const MediaReview = ({ reviews, media, mediaType }) => {
+const MediaReview = ({ reviews, media }) => {
   const { user } = useSelector((state) => state.user);
   const [listReviews, setListReviews] = useState([]);
   const [filteredReviews, setFilteredReviews] = useState([]);
@@ -168,10 +168,10 @@ const MediaReview = ({ reviews, media, mediaType }) => {
 
     const body = {
       content,
-      mediaId: media.detail.id,
-      mediaType,
-      mediaTitle: media.detail.title || media.detail.name,
-      mediaPoster: media.detail.poster_path,
+      mediaId: media.detail.item._id,
+      mediaType: "movie",
+      mediaTitle: media.detail.item.name,
+      mediaPoster: media.detail.item.poster_url,
     };
 
     const { response, error } = await reviewApi.add(body);
@@ -181,7 +181,7 @@ const MediaReview = ({ reviews, media, mediaType }) => {
     if (error) toast.error(error.message);
 
     if (response) {
-      toast.success(t("success.add_comment"));
+      // toast.success(t("success.add_comment"));
 
       setFilteredReviews([...filteredReviews, response]);
       setReviewCount(reviewCount + 1);
@@ -215,7 +215,7 @@ const MediaReview = ({ reviews, media, mediaType }) => {
 
     setReviewCount(reviewCount - 1);
 
-    toast.success(t("success.delete_comment"));
+    // toast.success(t("success.delete_comment"));
   };
 
   return (

@@ -98,7 +98,7 @@ const MediaPlayer = ({ videoUrl, mediaThumbUrl }) => {
       fullscreen: true,
       autoplay: false,
       autoPlayback: false,
-      autoSize: true,
+      // autoSize: true,
       pip: false,
 
       gesture: false,

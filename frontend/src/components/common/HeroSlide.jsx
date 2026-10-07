@@ -23,11 +23,10 @@ import uiConfigs from "../../configs/ui.configs";
 
 import CircularRate from "./CircularRate";
 import tmdbConfigs from "../../api/configs/tmdb.configs";
-import genreApi from "../../api/modules/genre.api";
 import mediaApi from "../../api/modules/media.api";
 import HeroItemSkeleton from "./Skeletons/HeroItemSkeleton";
 
-const HeroSlide = ({ mediaType, mediaCategory }) => {
+const HeroSlide = ({ mediaType, page }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -35,37 +34,29 @@ const HeroSlide = ({ mediaType, mediaCategory }) => {
   const { languageMode } = useSelector((state) => state.languageMode);
 
   const [movies, setMovies] = useState([]);
-  const [genres, setGenres] = useState([]);
 
   useEffect(() => {
     const getMedias = async () => {
-      const { response, err } = await mediaApi.getList({
-        mediaType,
-        mediaCategory,
-        page: 1,
+      dispatch(setGlobalLoading(true));
+
+      const { response, error } = await mediaApi.getListByType({
+        type: mediaType,
+        page: page,
       });
 
-      if (response) setMovies(response.results);
-      if (err) toast.error(err.message);
+      if (response) {
+        setMovies(response?.data?.items || []);
+      }
+
+      if (error) {
+        toast.error(error.message);
+      }
+
       dispatch(setGlobalLoading(false));
     };
 
-    const getGenres = async () => {
-      dispatch(setGlobalLoading(true));
-      const { response, err } = await genreApi.getList({ mediaType });
-
-      if (response) {
-        setGenres(response.genres);
-        getMedias();
-      }
-      if (err) {
-        toast.error(err.message);
-        setGlobalLoading(false);
-      }
-    };
-
-    getGenres();
-  }, [mediaType, mediaCategory, dispatch, languageMode]);
+    getMedias();
+  }, [mediaType, page,dispatch, languageMode]);
 
   return (
     <Box
@@ -86,6 +77,7 @@ const HeroSlide = ({ mediaType, mediaCategory }) => {
       }}
     >
       <Swiper
+        key={movies.length}
         grabCursor={true}
         loop={true}
         modules={[Autoplay]}
@@ -97,7 +89,7 @@ const HeroSlide = ({ mediaType, mediaCategory }) => {
       >
         {movies && movies.length > 0 ? (
           movies.map((movie, index) => (
-            <SwiperSlide key={index}>
+            <SwiperSlide key={movie._id}>
               <Box
                 sx={{
                   paddingTop: {
@@ -108,8 +100,8 @@ const HeroSlide = ({ mediaType, mediaCategory }) => {
                   },
                   backgroundPosition: "top",
                   backgroundSize: "cover",
-                  backgroundImage: `url(${tmdbConfigs.backdropPath(
-                    movie.backdrop_path || movie.poster_path,
+                  backgroundImage: `url(${tmdbConfigs.kkmovieImagePath(
+                    movie.thumb_url || movie.poster_url,
                   )})`,
                 }}
               />
@@ -149,36 +141,31 @@ const HeroSlide = ({ mediaType, mediaCategory }) => {
                     {/* title */}
                     <Typography
                       variant="h4"
-                      fontSize={{ xs: "2rem", md: "2rem", lg: "4rem" }}
+                      fontSize={{ xs: "1.5rem", md: "2rem", lg: "4rem" }}
                       fontWeight="700"
                       sx={{
                         ...uiConfigs.style.typoLines(2, "left"),
                       }}
                     >
-                      {movie.title || movie.name}
+                      {movie.name}
                     </Typography>
                     {/* title */}
 
                     <Stack direction="row" spacing={1} alignItems="center">
                       {/* rating */}
-                      <CircularRate value={movie.vote_average} />
+                      <CircularRate value={movie.tmdb?.vote_average || 0} />
                       {/* rating */}
 
                       <Divider orientation="vertical" />
                       {/* genres */}
-                      {[...movie.genre_ids]
-                        .splice(0, 2)
-                        .map((genreId, index) => (
-                          <Chip
-                            variant="filled"
-                            color="primary"
-                            key={index}
-                            label={
-                              genres.find((e) => e.id === genreId) &&
-                              genres.find((e) => e.id === genreId).name
-                            }
-                          />
-                        ))}
+                      {movie.category?.slice(0, 2).map((category) => (
+                        <Chip
+                          variant="filled"
+                          color="primary"
+                          key={category.id}
+                          label={category.name}
+                        />
+                      ))}
                       {/* genres */}
                     </Stack>
 
@@ -189,7 +176,7 @@ const HeroSlide = ({ mediaType, mediaCategory }) => {
                         ...uiConfigs.style.typoLines(3),
                       }}
                     >
-                      {movie.overview}
+                      {movie.origin_name}
                     </Typography>
                     {/* overview */}
 
@@ -199,8 +186,8 @@ const HeroSlide = ({ mediaType, mediaCategory }) => {
                       size="large"
                       startIcon={<PlayArrowIcon />}
                       component={Link}
-                      to={routesGen.mediaDetail(mediaType, movie.id)}
-                      sx={{ width: "max-content" }}
+                      to={routesGen.mediaDetail(movie.slug, movie.category[0]?.slug, movie._id)}
+                      sx={{ width: "max-content", borderRadius: "50px" }}
                     >
                       {t("common.watch_now")}
                     </Button>

@@ -9,7 +9,7 @@ import { LoadingButton } from "@mui/lab";
 import { Box, Button, Chip, Divider, Stack, Typography } from "@mui/material";
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import CircularRate from "../components/common/CircularRate";
@@ -44,7 +44,10 @@ import { convertMinuteToHour } from "../utils/convertMinuteToHour.utils";
 import { languageModes } from "../configs/language.config";
 
 const MediaStream = () => {
-  const { mediaType, mediaId } = useParams();
+  const { mediaSlug } = useParams();
+  const [searchParams] = useSearchParams();
+  const mediaGenre = searchParams.get("mediaGenre");
+  const mediaId = searchParams.get("mediaId");
 
   const { user, listFavorites } = useSelector((state) => state.user);
   const { languageMode } = useSelector((state) => state.languageMode);
@@ -54,8 +57,6 @@ const MediaStream = () => {
   const [onRequest, setOnRequest] = useState(false);
   const [genres, setGenres] = useState([]);
   const { t } = useTranslation();
-
-  const [currentMediaSource, setCurrentMediaSource] = useState(null);
 
   const [mediaEpisodes, setMediaEpisodes] = useState([]);
   const [currentServer, setCurrentServer] = useState(null);
@@ -72,70 +73,20 @@ const MediaStream = () => {
     const getMedia = async () => {
       dispatch(setGlobalLoading(true));
       const { response, error } = await mediaApi.getDetail({
-        mediaType,
+        mediaSlug,
+        mediaGenre,
         mediaId,
       });
 
       if (response) {
-        const { response: mediaSearchResponse, error: mediaSearchError } =
-          await videoSourceApi.getMediaSearch({
-            keyword: response.detail.original_title
-              ? response.detail.original_title
-              : response.detail.original_name,
-            year:
-              response?.detail?.release_date?.split("-")[0] ||
-              [
-                response.detail?.last_air_date?.split("-")[0],
-                response.detail?.first_air_date?.split("-")[0],
-              ]
-                .filter(Boolean)
-                .join(","),
-            category: convertGenreToSlugString(response.detail.genres),
-            country: convertCountryToSlugString(
-              response.detail.production_countries,
-            ),
-          });
-
-        if (mediaSearchResponse && mediaSearchResponse?.items?.length > 0) {
-          const { response: mediaVideoResponse, error: mediaVideoError } =
-            await videoSourceApi.getMediaVideo({
-              mediaSlug: mediaSearchResponse.items[0].slug,
-            });
-
-          if (
-            mediaVideoResponse &&
-            mediaVideoResponse.item.episodes.length > 0 &&
-            mediaVideoResponse.item.episodes[0].server_data[0].link_m3u8
-          ) {
-            if (
-              mediaType === tmdbConfigs.mediaType.tv &&
-              mediaVideoResponse.item.type === "series"
-            ) {
-              setCurrentMediaSource(mediaVideoResponse);
-              setMediaEpisodes(mediaVideoResponse.item.episodes);
-              setCurrentServer(mediaVideoResponse.item.episodes[0]);
-              setCurrentEpisode(
-                mediaVideoResponse.item.episodes[0].server_data[0],
-              );
-            } else if (
-              mediaType === tmdbConfigs.mediaType.movie &&
-              mediaVideoResponse.item.type !== "series"
-            ) {
-              setCurrentMediaSource(mediaVideoResponse);
-              setMediaEpisodes(mediaVideoResponse.item.episodes);
-              setCurrentServer(mediaVideoResponse.item.episodes[0]);
-              setCurrentEpisode(
-                mediaVideoResponse.item.episodes[0].server_data[0],
-              );
-            }
-          }
-        }
-      }
-
-      if (response) {
+        setMediaEpisodes(response.detail.item.episodes);
+        setCurrentServer(response.detail.item.episodes[0]);
+        setCurrentEpisode(
+          response.detail.item.episodes[0].server_data[0],
+        );
         setMedia(response);
         setIsFavorite(response.isFavorite);
-        setGenres(response.detail.genres.splice(0, 2));
+        setGenres(response.detail.item.category.splice(0, 2));
         setGetMediaError(false);
       }
 
@@ -147,9 +98,8 @@ const MediaStream = () => {
       dispatch(setGlobalLoading(false));
     };
 
-    if (tmdbConfigs.mediaType.hasOwnProperty(mediaType) && !isNaN(mediaId))
-      getMedia();
-  }, [mediaType, mediaId, dispatch, languageMode]);
+    getMedia();
+  }, [mediaSlug, mediaGenre, mediaId, dispatch, languageMode]);
 
   useEffect(() => {
     if (!user) {
@@ -173,11 +123,11 @@ const MediaStream = () => {
     setOnRequest(true);
 
     const body = {
-      mediaId: media.detail.id,
-      mediaTitle: media.detail.title || media.detail.name,
-      mediaType: mediaType,
-      mediaPoster: media.detail.poster_path,
-      mediaRate: media.detail.vote_average,
+      mediaId: media.detail.item._id,
+      mediaTitle: media.detail.item.name,
+      mediaType: "movie",
+      mediaPoster: media.detail.item.poster_url,
+      mediaRate: media.detail.item.tmdb.vote_average || 0,
     };
 
     const { response, error } = await favoriteApi.add(body);
@@ -189,7 +139,7 @@ const MediaStream = () => {
       dispatch(addFavorite(response));
       setIsFavorite(true);
 
-      toast.success(t("success.add_favorite"));
+      // toast.success(t("success.add_favorite"));
     }
   };
 
@@ -198,7 +148,7 @@ const MediaStream = () => {
     setOnRequest(true);
 
     const favorite = listFavorites.find(
-      (favorite) => favorite.mediaId.toString() === media.detail.id.toString(),
+      (favorite) => favorite.mediaId.toString() === media.detail.item._id.toString(),
     );
 
     const { response, error } = await favoriteApi.remove({
@@ -211,20 +161,19 @@ const MediaStream = () => {
     if (response) {
       dispatch(removeFavorite(favorite));
       setIsFavorite(false);
-      toast.success(t("success.delete_favorite"));
+      // toast.success(t("success.delete_favorite"));
     }
   };
 
-  if (!tmdbConfigs.mediaType.hasOwnProperty(mediaType) || isNaN(mediaId))
+  if (!mediaSlug || !mediaGenre || !mediaId)
     return <PageNotFound />;
 
-  if ((!media || !currentMediaSource) && !getMediaError) return null;
+  if (!media && !getMediaError) return null;
 
-  if ((!media || !currentMediaSource) && getMediaError) return <PageNotFound />;
+  if (!media && getMediaError) return <PageNotFound />;
 
   return (
-    media &&
-    currentMediaSource && (
+    media &&(
       <>
         <Box
           sx={{
@@ -248,11 +197,7 @@ const MediaStream = () => {
                   }}
                 >
                   {`${
-                    languageMode === languageModes.vi
-                      ? currentMediaSource?.item?.name ||
-                        media.detail.title ||
-                        media.detail.name
-                      : media.detail.title || media.detail.name
+                    media.detail.item.origin_name
                   }${currentEpisode?.name ? ` - ${currentEpisode.name}` : ""}`}
                 </Typography>
               </Box>
@@ -260,7 +205,7 @@ const MediaStream = () => {
               {/* <Container header={t("mediadetail.videos")}> */}
               <MediaPlayer
                 videoUrl={currentEpisode?.link_m3u8}
-                mediaThumbUrl={currentMediaSource?.item?.thumb_url}
+                mediaThumbUrl={media.detail.item.thumb_url}
               />
 
               {currentServer && (
@@ -301,9 +246,7 @@ const MediaStream = () => {
                     borderRadius: "2%",
                     paddingTop: "140%",
                     ...uiConfigs.style.backgroundImage(
-                      tmdbConfigs.posterPath(
-                        media.detail.poster_path || media.detail.backdrop_path,
-                      ),
+                        media.detail.item.poster_url || media.detail.item.thumb_url
                     ),
                   }}
                 />
@@ -330,9 +273,7 @@ const MediaStream = () => {
                       fontWeight="700"
                       sx={{ ...uiConfigs.style.typoLines(1, "left") }}
                     >
-                      {languageMode === languageModes.vi
-                        ? `${currentMediaSource?.item.name || media.detail.title || media.detail.name}`
-                        : `${media.detail.title || media.detail.name}`}
+                      {media.detail.item.name}
                     </Typography>
 
                     <Typography
@@ -341,7 +282,7 @@ const MediaStream = () => {
                       fontWeight="200"
                       sx={{ ...uiConfigs.style.typoLines(1, "left") }}
                     >
-                      {`${currentMediaSource.item.origin_name || media.detail.original_title || media.original_name}`}
+                      {media.detail.item.origin_name}
                     </Typography>
                     {/* title */}
                   </Stack>
@@ -349,7 +290,7 @@ const MediaStream = () => {
                   {/* rate and genres */}
                   <Stack direction="row" spacing={1} alignItems="center">
                     {/* rate */}
-                    <CircularRate value={media.detail.vote_average} />
+                    <CircularRate value={media.detail.item.tmdb.vote_average || 0} />
                     {/* rate */}
                     <Divider orientation="vertical" />
                     {/* genres */}
@@ -358,7 +299,7 @@ const MediaStream = () => {
                         label={genre.name}
                         variant="filled"
                         color="primary"
-                        key={index}
+                        key={genre.id}
                       />
                     ))}
                     {/* genres */}
@@ -371,9 +312,7 @@ const MediaStream = () => {
                       <CalendarMonthIcon color="primary" />
                       <Chip
                         label={
-                          mediaType === tmdbConfigs.mediaType.movie
-                            ? media?.detail?.release_date?.split("-")[0]
-                            : media?.detail?.first_air_date?.split("-")[0]
+                          media.detail.item.year
                         }
                         variant="filled"
                         color="primary"
@@ -383,11 +322,7 @@ const MediaStream = () => {
                     <Stack direction="row" spacing={1} alignItems="center">
                       <TimelapseIcon color="primary" />
                       <Chip
-                        label={convertMinuteToHour(
-                          currentMediaSource?.item?.time?.split(" ")[0] ||
-                            media?.detail?.runtime ||
-                            media?.detail?.episode_run_time?.[0] || "-",
-                        )}
+                        label={media.detail.item.time}
                         variant="filled"
                         color="primary"
                       />
@@ -400,16 +335,14 @@ const MediaStream = () => {
                     variant="body1"
                     sx={{ ...uiConfigs.style.typoLines(5) }}
                   >
-                    {languageMode === languageModes.vi
-                      ? `${
-                          currentMediaSource?.item?.content
+                    {
+                          media.detail.item.content
                             ?.replace(/<\/?[^>]+(>|$)/g, "")
                             ?.replaceAll("&quot;", '"')
                             ?.replaceAll("&amp;", "&")
                             ?.replaceAll("&#039;", "'")
                             ?.replaceAll("&apos;", "'") || media.detail.overview
-                        }`
-                      : media.detail.overview}
+                            }
                   </Typography>
                   {/* overview */}
 
@@ -446,7 +379,7 @@ const MediaStream = () => {
                         }
                       }}
                     >
-                      {currentMediaSource
+                      {media.detail.item.episodes.length > 0
                         ? t("common.watch_now")
                         : t("common.available_soon")}
                     </Button>
@@ -455,7 +388,7 @@ const MediaStream = () => {
 
                   {/* cast */}
                   <Container header={t("mediadetail.cast")}>
-                    <CastSlide casts={media.credits.cast} />
+                    <CastSlide casts={media.detail.item.actor} />
                   </Container>
                   {/* cast */}
                 </Stack>
@@ -467,18 +400,18 @@ const MediaStream = () => {
 
           {/* media recommendation */}
           <Container header={t("mediadetail.you_may_like")}>
-            {media.recommend.results.length > 0 && (
+            {media.recommend.items.length > 0 && (
               <RecommendSlide
-                medias={media.recommend.results}
-                mediaType={mediaType}
+                medias={media.recommend.items}
+                mediaType={"movie"}
               />
             )}
-            {media.recommend.results.length === 0 && (
+            {/* {media.recommend.results.length === 0 && (
               <MediaSlide
                 mediaType={mediaType}
                 mediaCategory={tmdbConfigs.mediaCategory.top_rated}
               />
-            )}
+            )} */}
           </Container>
           {/* media recommendation */}
         </Box>
