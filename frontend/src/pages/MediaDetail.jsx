@@ -269,7 +269,7 @@ const MediaDetail = () => {
                         label={genre.name}
                         variant="filled"
                         color="primary"
-                        key={genre.id}
+                        key={genre._id}
                       />
                     ))}
                     {/* genres */}

@@ -26,8 +26,8 @@ const mediaEndpoints = {
   listByCountry: ({ countrySlug, page }) =>
     `/medias/country/${countrySlug}?page=${page}`,
 
-  search: ({ query, page }) =>
-    `/medias/search?query=${query}&page=${page}`,
+  search: ({ keyword, page }) =>
+    `/medias/search?keyword=${keyword}&page=${page}`,
 };
 
 const mediaApi = {
@@ -137,11 +137,11 @@ const mediaApi = {
     }
   },
 
-  search: async ({ query, page }) => {
+  search: async ({ keyword, page }) => {
     try {
       const response = await publicClient.get(
         mediaEndpoints.search({
-          query,
+          keyword,
           page,
         }),
       );

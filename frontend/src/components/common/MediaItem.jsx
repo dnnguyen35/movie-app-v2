@@ -19,26 +19,26 @@ const MediaItem = ({ media, mediaType }) => {
   const [rate, setRate] = useState(null);
 
   useEffect(() => {
-    setTitle(media.name);
+    setTitle(media.name || media.mediaTitle);
 
-    setPosterPath(media.poster_url);
+    setPosterPath(media.poster_url || media.mediaPoster);
 
-    setReleaseDate(media.year);
+    setReleaseDate(media.year || "");
 
-    setRate(media.tmdb?.vote_average || 0);
+    setRate(media.tmdb?.vote_average || media.mediaRate || 0);
   }, [media]);
 
   return (
     <Link
       to={
-        mediaType !== "people"
+        mediaType !== "people" && media.slug && media.category && media._id
           ? routesGen.mediaDetail(media.slug, media.category[0]?.slug, media._id)
-          : routesGen.person(media.id)
+          : "#"
       }
     >
       <Box
         sx={{
-          ...uiConfigs.style.backgroundImage(tmdbConfigs.kkmovieImagePath(posterPath)),
+          ...uiConfigs.style.backgroundImage(posterPath.includes("https") ? posterPath : tmdbConfigs.kkmovieImagePath(posterPath)),
           paddingTop: "160%",
           borderRadius: "2%",
           overflow: "hidden",
@@ -57,7 +57,7 @@ const MediaItem = ({ media, mediaType }) => {
           <>
             {favoriteUtils.check({
               listFavorites,
-              mediaId: media._id,
+              mediaId: media._id || media.mediaId,
             }) && (
               <FavoriteIcon
                 color="primary"

@@ -36,7 +36,7 @@ const ReviewItem = ({ review, onRemoved }) => {
     if (error) toast.error(error.message);
 
     if (response) {
-      toast.success("Deleted review successfully");
+      // toast.success("Deleted review successfully");
       onRemoved(review.id);
     }
   };
@@ -52,7 +52,7 @@ const ReviewItem = ({ review, onRemoved }) => {
         "&:hover": { backgroundColor: "background.paper" },
       }}
     >
-      <Box sx={{ width: { xs: 0, md: "10%" } }}>
+      <Box sx={{ width: { xs: "45%", md: "10%" } }}>
         <Link
           to={routesGen.mediaDetail(review.mediaType, review.mediaId)}
           style={{ color: "unset", textDecoration: "none", pointerEvents: "none" }}
@@ -62,7 +62,7 @@ const ReviewItem = ({ review, onRemoved }) => {
               borderRadius: "2%",
               paddingTop: "160%",
               ...uiConfigs.style.backgroundImage(
-                tmdbConfigs.posterPath(review.mediaPoster),
+                review.mediaPoster
               ),
             }}
           />

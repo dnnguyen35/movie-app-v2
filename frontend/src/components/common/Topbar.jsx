@@ -14,7 +14,7 @@ import {
   Toolbar,
   useScrollTrigger,
 } from "@mui/material";
-import { cloneElement, useState } from "react";
+import { cloneElement, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import menuConfigs from "../../configs/menu.configs";
 import { themeModes } from "../../configs/theme.configs";
@@ -25,6 +25,12 @@ import UserMenu from "./UserMenu";
 import Sidebar from "./Sidebar";
 import LanguageToggle from "./LanguageToggle";
 import { useTranslation } from "react-i18next";
+import mediaApi from "../../api/modules/media.api";
+import MenuPopover from "./MenuPopover";
+import { routesGen } from "../../routes/routes";
+import { ClickAwayListener } from "@mui/material";
+import SearchInput from "./SearchInput";
+import { Search } from "lucide-react";
 
 const ScrollAppBar = ({ children, window }) => {
   const { themeMode } = useSelector((state) => state.themeMode);
@@ -55,6 +61,12 @@ const Topbar = () => {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const [genres, setGenres] = useState([]);
+  const [countries, setCountries] = useState([]);
+
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const [menuType, setMenuType] = useState(null);
+
   const dispatch = useDispatch();
 
   const onSwitchTheme = () => {
@@ -64,6 +76,41 @@ const Topbar = () => {
   };
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+
+  const handleMenuOpen = (event, type) => {
+    if (menuType === type) {
+      setMenuAnchorEl(null);
+      setMenuType(null);
+      return;
+    }
+
+    setMenuAnchorEl(event.currentTarget);
+    setMenuType(type);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+    setMenuType(null);
+  };
+
+  useEffect(() => {
+  const getGenresAndCountries = async () => {
+    const [genreResult, countryResult] = await Promise.all([
+      mediaApi.getGenres(),
+      mediaApi.getCountries(),
+    ]);
+
+    if (genreResult.response) {
+      setGenres(genreResult.response?.data?.items || []);
+    }
+
+    if (countryResult.response) {
+      setCountries(countryResult.response?.data?.items || []);
+    }
+  };
+
+  getGenresAndCountries();
+}, []);
 
   return (
     <>
@@ -83,7 +130,7 @@ const Topbar = () => {
               </IconButton>
 
               <Box sx={{ display: { xs: "inline-block", md: "none" } }}>
-                <Logo />
+                <SearchInput />
               </Box>
             </Stack>
 
@@ -97,7 +144,7 @@ const Topbar = () => {
                 <Logo />
               </Box>
 
-              {menuConfigs.main.map((item, index) => (
+              {/* {menuConfigs.main.map((item, index) => (
                 <Button
                   key={index}
                   sx={{
@@ -112,7 +159,32 @@ const Topbar = () => {
                 >
                   {t(`topbar.${item.display}`)}
                 </Button>
-              ))}
+              ))} */}
+
+              <SearchInput/>
+
+              <ClickAwayListener onClickAway={handleMenuClose}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <MenuPopover
+                    label={t("topbar.genres")}
+                    items={genres}
+                    anchorEl={menuType === "genre" ? menuAnchorEl : null}
+                    onOpen={(event) => handleMenuOpen(event, "genre")}
+                    onClose={handleMenuClose}
+                    getPath={(slug) => routesGen.mediaListByGenre(slug)}
+                  />
+
+                  <MenuPopover
+                    label={t("topbar.countries")}
+                    items={countries}
+                    anchorEl={menuType === "country" ? menuAnchorEl : null}
+                    onOpen={(event) => handleMenuOpen(event, "country")}
+                    onClose={handleMenuClose}
+                    getPath={(slug) => routesGen.mediaListByCountry(slug)}
+                  />
+                </Box>
+              </ClickAwayListener>
+              
               <IconButton sx={{ color: "inherit" }} onClick={onSwitchTheme}>
                 {themeMode === themeModes.dark ? (
                   <WbSunnyOutlinedIcon />
@@ -120,7 +192,7 @@ const Topbar = () => {
                   <DarkModeOutlinedIcon />
                 )}
               </IconButton>
-              <LanguageToggle />
+              {/* <LanguageToggle /> */}
             </Box>
             {/* display main menu */}
 

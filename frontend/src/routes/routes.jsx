@@ -22,6 +22,8 @@ export const routesGen = {
   mediaList: (listType) => `/list/${listType}`,
   mediaDetail: (mediaSlug, mediaGenre, mediaId) => `/detail/${mediaSlug}?mediaGenre=${mediaGenre}&mediaId=${mediaId}`,
   mediaStream: (mediaSlug, mediaGenre, mediaId) => `/stream/${mediaSlug}?mediaGenre=${mediaGenre}&mediaId=${mediaId}`,
+  mediaListByGenre: (genreSlug) => `/list/genres/${genreSlug}?listType=genres`,
+  mediaListByCountry: (countrySlug) => `/list/country/${countrySlug}?listType=country`,
 };
 
 const routes = [
@@ -68,7 +70,11 @@ const routes = [
     state: "reviews",
   },
   {
-    path: "/:mediaType",
+    path: "/list/genres/:genreSlug",
+    element: <MediaList />,
+  },
+  {
+    path: "/list/country/:countrySlug",
     element: <MediaList />,
   },
   {

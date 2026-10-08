@@ -9,7 +9,9 @@
     "reset_password": "reset password",
     "forgot_password": "forgot password",
     "resend_otp": "resend otp",
-    "verify_otp": "verify otp"
+    "verify_otp": "verify otp",
+    "genres": "genres",
+    "countries": "countries"
   },
   "otp": {
     "expire_in": "OTP expires in",
@@ -64,8 +66,10 @@
     "movie": "movie",
     "tv": "tv series",
     "people": "people",
-    "search_placeholder": "Please type here to search !",
-    "not_found": "Ooppp not found!"
+    "search_placeholder": "Search...",
+    "not_found": "Ooppp not found!",
+    "see_more": "See more",
+    "see_all": "View all"
   },
   "mediadetail": {
     "cast": "cast",

@@ -9,7 +9,9 @@
     "reset_password": "đặt lại mật khẩu",
     "forgot_password": "quên mật khẩu",
     "resend_otp": "nhận otp mới",
-    "verify_otp": "xác thực otp"
+    "verify_otp": "xác thực otp",
+    "genres": "thể loại",
+    "countries": "quốc gia"
   },
   "otp": {
     "expire_in": "OTP hết hạn sau",
@@ -64,8 +66,10 @@
     "movie": "phim lẻ",
     "tv": "phim bộ",
     "people": "cá nhân",
-    "search_placeholder": "Nhập thông tin vào đây để tìm kiếm !",
-    "not_found": "Không tìm thấy!"
+    "search_placeholder": "Tìm kiếm...",
+    "not_found": "Không tìm thấy!",
+    "see_more": "Xem thêm",
+    "see_all": "Xem tất cả"
   },
   "mediadetail": {
     "cast": "diễn viên",

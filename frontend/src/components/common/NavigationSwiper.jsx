@@ -13,7 +13,7 @@ const NavigationSwiper = ({ children }) => {
         },
         "& .swiper-slide-active": { opacity: 1 },
         "& .swiper-pagination-bullet": {
-          backgroundColor: "text.primary",
+          backgroundColor: "primary.main",
         },
         "& .swiper-button-next, & .swiper-button-prev": {
           color: "text.primary",

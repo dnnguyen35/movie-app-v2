@@ -25,8 +25,6 @@ import TaskAltOutlinedIcon from "@mui/icons-material/TaskAltOutlined";
 const ReviewItem = ({ review, onRemoved }) => {
   const { user } = useSelector((state) => state.user);
 
-  console.log("review detail", review);
-
   const { t } = useTranslation();
 
   const [onRequest, setOnRequest] = useState(false);
