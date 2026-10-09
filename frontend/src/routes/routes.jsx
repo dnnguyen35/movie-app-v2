@@ -10,6 +10,9 @@ import ProtectedPage from "../components/common/ProtectedPage";
 import MediaStream from "../pages/MediaStream";
 import Testpage from "../pages/Testpage";
 import NotificationPost from "../pages/NotificationPost";
+import MediaListBySearch from "../pages/MediaListBySearch";
+import MediaListByCountry from "../pages/MediaListByCountry";
+import MediaListByGenre from "../pages/MediaListByGenre";
 
 export const routesGen = {
   home: "/",
@@ -22,8 +25,9 @@ export const routesGen = {
   mediaList: (listType) => `/list/${listType}`,
   mediaDetail: (mediaSlug, mediaGenre, mediaId) => `/detail/${mediaSlug}?mediaGenre=${mediaGenre}&mediaId=${mediaId}`,
   mediaStream: (mediaSlug, mediaGenre, mediaId) => `/stream/${mediaSlug}?mediaGenre=${mediaGenre}&mediaId=${mediaId}`,
-  mediaListByGenre: (genreSlug) => `/list/genres/${genreSlug}?listType=genres`,
-  mediaListByCountry: (countrySlug) => `/list/country/${countrySlug}?listType=country`,
+  mediaListByGenre: (genreSlug) => `/list/genres/${genreSlug}`,
+  mediaListByCountry: (countrySlug) => `/list/country/${countrySlug}`,
+  mediaSearch: (keyword) => `/list/search/${keyword}`
 };
 
 const routes = [
@@ -71,11 +75,15 @@ const routes = [
   },
   {
     path: "/list/genres/:genreSlug",
-    element: <MediaList />,
+    element: <MediaListByGenre />,
   },
   {
     path: "/list/country/:countrySlug",
-    element: <MediaList />,
+    element: <MediaListByCountry />,
+  },
+  {
+    path: "/list/search/:keyword",
+    element: <MediaListBySearch/>
   },
   {
     path: "/detail/:mediaSlug",

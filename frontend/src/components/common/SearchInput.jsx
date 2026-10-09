@@ -15,6 +15,10 @@ const SearchInput = () => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const [keyword, setKeyword] = useState("");
+
+  const [totalPages, setTotalPages] = useState(1);
   
   const { t } = useTranslation();
 
@@ -48,7 +52,10 @@ const SearchInput = () => {
 
       if (response) {
         setResults(response?.data?.items || []);
+        setTotalPages(response?.data?.params?.pagination?.totalPages || 1);
+        setKeyword(keyword)
       } else if (error) {
+        setKeyword("")
         setResults([]);
       }
 
@@ -64,8 +71,10 @@ const SearchInput = () => {
     requestIdRef.current++;
 
     setQuery("");
+    setKeyword("")
     setResults([]);
     setLoading(false);
+    setTotalPages(1);
   };
 
   const showDropdown = query.trim().length > 0;
@@ -101,7 +110,7 @@ const SearchInput = () => {
         <SearchIcon
           sx={{
             fontSize: 20,
-            color: "text.secondary",
+            color: "primary.main",
             mr: 0.5,
           }}
         />
@@ -114,10 +123,10 @@ const SearchInput = () => {
             flex: 1,
             minWidth: 0,
             fontSize: "0.85rem",
-            color: "inherit",
+            color: "primary.contrastText",
 
             "& input::placeholder": {
-              color: "text.secondary",
+              color: "",
               opacity: 1,
             },
           }}
@@ -139,10 +148,11 @@ const SearchInput = () => {
 
       {showDropdown && (
         <SearchDropdown
-          query={query}
+          query={keyword}
           results={results}
           loading={loading}
           onClose={handleClear}
+          totalPages={totalPages}
         />
       )}
     </Box>

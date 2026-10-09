@@ -8,4 +8,8 @@ const calculateRemainingTime = (expirationTimeInSeconds) => {
   return Math.max(0, remainingTime);
 };
 
+export const getRandomPage = () => {
+  return Math.floor(Math.random() * 5) + 1;
+}
+
 export default calculateRemainingTime;

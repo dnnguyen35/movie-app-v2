@@ -197,7 +197,7 @@ const MediaStream = () => {
                   }}
                 >
                   {`${
-                    media.detail.item.origin_name
+                    media.detail.item.name || media.detail.item.origin_name
                   }${currentEpisode?.name ? ` - ${currentEpisode.name}` : ""}`}
                 </Typography>
               </Box>
@@ -205,7 +205,7 @@ const MediaStream = () => {
               {/* <Container header={t("mediadetail.videos")}> */}
               <MediaPlayer
                 videoUrl={currentEpisode?.link_m3u8}
-                mediaThumbUrl={media.detail.item.thumb_url}
+                mediaThumbUrl={media.detail.item.thumb_url || media.detail.item.poster_url}
               />
 
               {currentServer && (
@@ -215,6 +215,7 @@ const MediaStream = () => {
                   setCurrentServer={setCurrentServer}
                   currentEpisode={currentEpisode}
                   setCurrentEpisode={setCurrentEpisode}
+                  videoFrameRef={videoRef}
                 />
               )}
               {/* </Container> */}

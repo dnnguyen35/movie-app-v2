@@ -1,160 +1,164 @@
 import { LoadingButton } from "@mui/lab";
-import { Box, Button, Stack, Typography } from "@mui/material";
-import { useEffect, useState, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import tmdbConfigs from "../api/configs/tmdb.configs";
-import mediaApi from "../api/modules/media.api";
-import uiConfigs from "../configs/ui.configs";
-import HeroSlide from "../components/common/HeroSlide";
-import MediaGrid from "../components/common/MediaGrid";
-import { setAppState } from "../redux/features/appStateSlice";
-import { setGlobalLoading } from "../redux/features/globalLoadingSlice";
+import { Box, Stack, Typography, CircularProgress } from "@mui/material";
+import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import usePrevious from "../hooks/usePrevious";
-import CircularProgress from "@mui/material/CircularProgress";
 import { useTranslation } from "react-i18next";
-import PageNotFound from "./PageNotFound";
 
-const MediaList = () => {
-  const { mediaType } = useParams();
-  const { languageMode } = useSelector((state) => state.languageMode);
-  const [justLanguageChange, setJustLanguageChange] = useState(false);
+import uiConfigs from "../configs/ui.configs";
+import MediaGrid from "../components/common/MediaGrid";
+import { setGlobalLoading } from "../redux/features/globalLoadingSlice";
 
-  const [medias, setMedias] = useState([]);
-  const [mediaLoading, setMediaLoading] = useState(false);
-  const [currentCategory, setCurrentCategory] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
+const MediaList = ({ title, fetchMedias }) => {
   const { t } = useTranslation();
-
-  const prevMediaType = usePrevious(mediaType);
-
   const dispatch = useDispatch();
 
-  const mediaCategories = useMemo(() => ["popular", "top_rated"], []);
-  const category = ["popular", "top_rated"];
+  const [medias, setMedias] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [mediaLoading, setMediaLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [slugText, setSlugText] = useState("");
+
+  const requestIdRef = useRef(0);
 
   useEffect(() => {
-    dispatch(setAppState(mediaType));
-    window.scrollTo(0, 0);
-  }, [mediaType, dispatch]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-    if (currentPage === 1) setJustLanguageChange(true);
-  }, [languageMode]);
-
-  useEffect(() => {
-    const getMedias = async () => {
-      if (currentPage === 1) dispatch(setGlobalLoading(true));
-
-      setMediaLoading(true);
-
-      const { response, error } = await mediaApi.getList({
-        mediaType,
-        mediaCategory: mediaCategories[currentCategory],
-        page: currentPage,
-      });
-
-      setMediaLoading(false);
-      dispatch(setGlobalLoading(false));
-      setJustLanguageChange(false);
-
-      if (error) toast.error(error.message);
-
-      if (response) {
-        if (currentPage !== 1)
-          setMedias((prevMedias) => [...prevMedias, ...response.results]);
-        else setMedias([...response.results]);
-      }
-    };
-
-    if (mediaType !== prevMediaType) {
-      setCurrentCategory(0);
-      setCurrentPage(1);
-    }
-
-    if (tmdbConfigs.mediaType.hasOwnProperty(mediaType)) getMedias();
-  }, [
-    mediaType,
-    currentCategory,
-    prevMediaType,
-    currentPage,
-    mediaCategories,
-    justLanguageChange,
-    dispatch,
-  ]);
-
-  const onCategoryChange = (categoryIndex) => {
-    if (currentCategory === categoryIndex) return;
+    let cancelled = false;
+    const requestId = ++requestIdRef.current;
 
     setMedias([]);
     setCurrentPage(1);
-    setCurrentCategory(categoryIndex);
+    setHasMore(true);
+    setSlugText("")
+    setMediaLoading(true);
+    dispatch(setGlobalLoading(true));
+
+    const getMedias = async () => {
+      try {
+        const { response, error } = await fetchMedias(1);
+
+        if (cancelled || requestId !== requestIdRef.current) return;
+
+        if (error) {
+          toast.error(error.message);
+          return;
+        }
+
+        const data = response?.data;
+        const items = data?.items ?? [];
+        const pagination = data?.params?.pagination;
+
+        setMedias(items);
+        setCurrentPage(1);
+        setSlugText(data?.titlePage)
+        setHasMore(
+          pagination?.totalPages != null
+            ? 1 < pagination.totalPages
+            : items.length > 0
+        );
+      } catch {
+        if (!cancelled) {
+          toast.error("Get media filed in media list");
+        }
+      } finally {
+        if (!cancelled && requestId === requestIdRef.current) {
+          setMediaLoading(false);
+          dispatch(setGlobalLoading(false));
+        }
+      }
+    };
+
+    getMedias();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [fetchMedias, dispatch]);
+
+  const onLoadMore = async () => {
+    if (mediaLoading || !hasMore) return;
+
+    const nextPage = currentPage + 1;
+    const requestId = ++requestIdRef.current;
+
+    setMediaLoading(true);
+
+    try {
+      const { response, error } = await fetchMedias(nextPage);
+
+      if (requestId !== requestIdRef.current) return;
+
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+
+      const data = response?.data;
+      const items = data?.items ?? [];
+      const pagination = data?.params?.pagination;
+
+      setMedias((prev) => [...prev, ...items]);
+      setCurrentPage(nextPage);
+      setHasMore(
+        pagination?.totalPages != null
+          ? nextPage < pagination.totalPages
+          : items.length > 0
+      );
+    } catch {
+      if (requestId === requestIdRef.current) {
+        toast.error("Không thể tải thêm phim.");
+      }
+    } finally {
+      if (requestId === requestIdRef.current) {
+        setMediaLoading(false);
+      }
+    }
   };
-
-  const onLoadMore = () => setCurrentPage(currentPage + 1);
-
-  if (!tmdbConfigs.mediaType.hasOwnProperty(mediaType)) {
-    return <PageNotFound />;
-  }
 
   return (
     <>
-      <HeroSlide
-        mediaType={mediaType}
-        mediaCategory={mediaCategories[currentCategory]}
-      />
+      {/* <HeroSlide mediaType={tmdbConfigs.mediaListType.phimchieurap} page={getRandomPage()}/> */}
+
       <Box sx={{ ...uiConfigs.style.mainContent }}>
         <Stack
-          spacing={2}
-          direction={{ xs: "column", md: "row" }}
+          spacing={1}
+          direction={{ xs: "row", md: "row" }}
           alignItems="center"
-          justifyContent="space-between"
-          sx={{ marginBottom: 4 }}
+          sx={{ marginBottom: 4, marginTop: 10 }}
         >
-          <Typography variant="h5" fontWeight={700} textTransform="uppercase">
-            {mediaType === tmdbConfigs.mediaType.movie
-              ? t("medialist.movies")
-              : t("medialist.tv_series")}
+          <LocalOfferOutlinedIcon color="primary" />
+          <Typography
+            variant="h5"
+            fontWeight={700}
+            textTransform="uppercase"
+            sx={{
+              ...uiConfigs.style.typoLines(1, "left"),
+              fontSize: { xs: "1rem", md: "1.3rem" },
+            }}
+          >
+            {title !== "" ? `${title}: ${slugText}` : slugText.slice(9)}
           </Typography>
-          <Stack direction="row" spacing={2}>
-            {category.map((cate, index) => (
-              <Button
-                key={index}
-                size="large"
-                variant={currentCategory === index ? "contained" : "text"}
-                sx={{
-                  color:
-                    currentCategory === index
-                      ? "primary.contrastText"
-                      : "text.primary",
-                }}
-                onClick={() => onCategoryChange(index)}
-              >
-                {cate === "popular"
-                  ? t("medialist.popular")
-                  : t("medialist.top_rated")}
-              </Button>
-            ))}
-          </Stack>
         </Stack>
 
-        <MediaGrid medias={medias} mediaType={mediaType} />
+        <MediaGrid medias={medias} />
 
-        <LoadingButton
-          sx={{
-            marginTop: 8,
-          }}
-          fullWidth
-          loading={mediaLoading}
-          onClick={onLoadMore}
-          loadingIndicator={
-            <CircularProgress size={20} sx={{ color: "primary.main" }} />
-          }
-        >
-          {t("common.see_more")}
-        </LoadingButton>
+        {hasMore && (
+          <LoadingButton
+            sx={{ marginTop: 8 }}
+            fullWidth
+            loading={mediaLoading}
+            disabled={mediaLoading}
+            onClick={onLoadMore}
+            loadingIndicator={
+              <CircularProgress
+                size={20}
+                sx={{ color: "primary.main" }}
+              />
+            }
+          >
+            {t("common.see_more")}
+          </LoadingButton>
+        )}
       </Box>
     </>
   );

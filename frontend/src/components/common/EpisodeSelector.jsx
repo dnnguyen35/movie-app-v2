@@ -6,6 +6,7 @@ const EpisodeSelector = ({
   setCurrentServer,
   currentEpisode,
   setCurrentEpisode,
+  videoFrameRef
 }) => {
   const theme = useTheme();
 
@@ -62,7 +63,18 @@ const EpisodeSelector = ({
             <Button
               key={episode.slug}
               variant={selected ? "contained" : "outlined"}
-              onClick={() => setCurrentEpisode(episode)}
+              onClick={() => {
+                setCurrentEpisode(episode);
+                if(videoFrameRef.current){
+                  videoFrameRef.current.scrollIntoView(
+                    {
+                      behavior: "smooth"
+                    }
+                  )
+                }
+
+              }
+            }
               sx={{
                 textTransform: "none",
 

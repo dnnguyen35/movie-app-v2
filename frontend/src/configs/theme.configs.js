@@ -27,7 +27,7 @@ const themeConfigs = {
         : {
             primary: {
               main: "#9575cd",
-              // contrastText: "#4caf50",
+              // contrastText: "#FFD700",
             },
             secondary: {
               main: "#f44336",

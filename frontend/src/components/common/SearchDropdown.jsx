@@ -15,6 +15,7 @@ const SearchDropdown = ({
   results,
   loading,
   onClose,
+  totalPages
 }) => {
   const { t } = useTranslation();
 
@@ -122,18 +123,16 @@ const SearchDropdown = ({
         <>
           <Box
             onScroll={handleScroll}
-            sx={{
+            sx={(theme) => ({
               maxHeight: 420,
               overflowY: "auto",
-
               overscrollBehavior: "contain",
 
               scrollbarWidth: "thin",
-              scrollbarColor:
-                "rgba(128,128,128,0.35) transparent",
+              scrollbarColor: `${theme.palette.primary.main} transparent`,
 
               "&::-webkit-scrollbar": {
-                width: 5,
+                width: "5px",
               },
 
               "&::-webkit-scrollbar-track": {
@@ -141,16 +140,15 @@ const SearchDropdown = ({
               },
 
               "&::-webkit-scrollbar-thumb": {
-                backgroundColor:
-                  "rgba(128,128,128,0.35)",
-                borderRadius: 10,
+                backgroundColor: theme.palette.primary.main,
+                borderRadius: "999px",
+                boxShadow: `inset 0 0 0 1px ${theme.palette.background.paper}`,
               },
 
               "&::-webkit-scrollbar-thumb:hover": {
-                backgroundColor:
-                  "rgba(128,128,128,0.55)",
+                backgroundColor: theme.palette.primary.light,
               },
-            }}
+            })}
           >
             {results.map((movie) => (
               <Box
@@ -220,7 +218,7 @@ const SearchDropdown = ({
                 >
                   <Box
                     component="img"
-                    src={movie.poster_url}
+                    src={movie.poster_url || movie.thumb_url}
                     alt={movie.name}
                     sx={{
                       width: "100%",
@@ -338,15 +336,13 @@ const SearchDropdown = ({
           </Box>
 
           {/* See all */}
-          {isAtBottom && (
+          {(isAtBottom && totalPages > 1) && (
             <Box
               component={Link}
-              to={`/search?query=${encodeURIComponent(
-                query.trim(),
-              )}`}
+              to={routesGen.mediaSearch(query)}
               onClick={onClose}
               sx={{
-                height: 44,
+                height: 36,
 
                 display: "flex",
                 alignItems: "center",

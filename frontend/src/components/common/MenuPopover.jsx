@@ -22,10 +22,13 @@ const MenuPopover = ({
       <Button
         onClick={onOpen}
         endIcon={<KeyboardArrowDownIcon />}
+        variant={open ? "contained" : "outlined"}
         sx={{
           mr: 2,
-          backgroundColor: open ? "primary.main" : "transparent",
-          color: open ? "primary.contrastText" : "inherit",
+          backgroundColor: open ? "primary.dark" : "transparent",
+          color: "secondary.contrastText",
+          borderColor: "primary.main",
+
           "&:hover": {
             backgroundColor: open
               ? "primary.dark"
@@ -47,7 +50,7 @@ const MenuPopover = ({
         <Paper
           sx={{
             mt: 1,
-            width: 420,
+            width: 320,
             maxWidth: "calc(100vw - 20px)",
             borderRadius: 2,
             p: 1,
