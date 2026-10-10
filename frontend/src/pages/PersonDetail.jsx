@@ -60,7 +60,7 @@ const PersonDetail = () => {
                     backgroundPosition: "center",
                     backgroundColor: "darkgrey",
                     backgroundImage: `url(${tmdbConfigs.posterPath(
-                      person.profile_path
+                      person.profile_path,
                     )})`,
                   }}
                 />

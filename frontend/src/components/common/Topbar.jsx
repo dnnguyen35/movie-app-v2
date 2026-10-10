@@ -94,23 +94,23 @@ const Topbar = () => {
   };
 
   useEffect(() => {
-  const getGenresAndCountries = async () => {
-    const [genreResult, countryResult] = await Promise.all([
-      mediaApi.getGenres(),
-      mediaApi.getCountries(),
-    ]);
+    const getGenresAndCountries = async () => {
+      const [genreResult, countryResult] = await Promise.all([
+        mediaApi.getGenres(),
+        mediaApi.getCountries(),
+      ]);
 
-    if (genreResult.response) {
-      setGenres(genreResult.response?.data?.items || []);
-    }
+      if (genreResult.response) {
+        setGenres(genreResult.response?.data?.items || []);
+      }
 
-    if (countryResult.response) {
-      setCountries(countryResult.response?.data?.items || []);
-    }
-  };
+      if (countryResult.response) {
+        setCountries(countryResult.response?.data?.items || []);
+      }
+    };
 
-  getGenresAndCountries();
-}, []);
+    getGenresAndCountries();
+  }, []);
 
   return (
     <>
@@ -144,24 +144,7 @@ const Topbar = () => {
                 <Logo />
               </Box>
 
-              {/* {menuConfigs.main.map((item, index) => (
-                <Button
-                  key={index}
-                  sx={{
-                    color: appState.includes(item.state)
-                      ? "primary.contrastText"
-                      : "inherit",
-                    mr: 2,
-                  }}
-                  component={Link}
-                  to={item.path}
-                  variant={appState.includes(item.state) ? "contained" : "text"}
-                >
-                  {t(`topbar.${item.display}`)}
-                </Button>
-              ))} */}
-
-              <SearchInput/>
+              <SearchInput />
 
               <ClickAwayListener onClickAway={handleMenuClose}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -184,7 +167,7 @@ const Topbar = () => {
                   />
                 </Box>
               </ClickAwayListener>
-              
+
               <IconButton sx={{ color: "inherit" }} onClick={onSwitchTheme}>
                 {themeMode === themeModes.dark ? (
                   <WbSunnyOutlinedIcon />
@@ -218,17 +201,6 @@ const Topbar = () => {
               ) : null}
               {user && <UserMenu />}
             </Stack>
-
-            {/* {user &&
-              user?.isAdmin(
-                <Link to="/admin" style={{ textDecoration: "none" }}>
-                  <IconButton sx={{ color: "inherit" }}>
-                    <SettingsOutlinedIcon />
-                  </IconButton>
-                </Link>
-              )}
-            {user && <UserMenu />} */}
-            {/* user menu */}
           </Toolbar>
         </AppBar>
       </ScrollAppBar>

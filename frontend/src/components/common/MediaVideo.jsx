@@ -26,9 +26,7 @@ const MediaVideo = ({ video }) => {
     >
       <iframe
         key={video}
-        src={
-          tmdbConfigs.youtubePath(videoId)
-        }
+        src={tmdbConfigs.youtubePath(videoId)}
         ref={iframeRef}
         width="100%"
         title={"media-video"}

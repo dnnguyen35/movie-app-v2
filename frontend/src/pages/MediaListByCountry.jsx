@@ -7,11 +7,11 @@ import { useTranslation } from "react-i18next";
 
 const MediaListByCountry = () => {
   const { countrySlug } = useParams();
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   const fetchMedias = useCallback(
     (page) => mediaApi.getListByCountry({ countrySlug, page }),
-    [countrySlug]
+    [countrySlug],
   );
 
   return (

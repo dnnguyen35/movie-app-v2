@@ -56,7 +56,7 @@ const HeroSlide = ({ mediaType, page }) => {
     };
 
     getMedias();
-  }, [mediaType, page,dispatch, languageMode]);
+  }, [mediaType, page, dispatch, languageMode]);
 
   return (
     <Box
@@ -186,7 +186,11 @@ const HeroSlide = ({ mediaType, page }) => {
                       size="large"
                       startIcon={<PlayArrowIcon />}
                       component={Link}
-                      to={routesGen.mediaDetail(movie.slug, movie.category[0]?.slug, movie._id)}
+                      to={routesGen.mediaDetail(
+                        movie.slug,
+                        movie.category[0]?.slug,
+                        movie._id,
+                      )}
                       sx={{ width: "max-content", borderRadius: "50px" }}
                     >
                       {t("common.watch_now")}

@@ -55,15 +55,17 @@ const ReviewItem = ({ review, onRemoved }) => {
       <Box sx={{ width: { xs: "45%", md: "10%" } }}>
         <Link
           to={routesGen.mediaDetail(review.mediaType, review.mediaId)}
-          style={{ color: "unset", textDecoration: "none", pointerEvents: "none" }}
+          style={{
+            color: "unset",
+            textDecoration: "none",
+            pointerEvents: "none",
+          }}
         >
           <Box
             sx={{
               borderRadius: "2%",
               paddingTop: "160%",
-              ...uiConfigs.style.backgroundImage(
-                review.mediaPoster
-              ),
+              ...uiConfigs.style.backgroundImage(review.mediaPoster),
             }}
           />
         </Link>
@@ -78,7 +80,11 @@ const ReviewItem = ({ review, onRemoved }) => {
         <Stack spacing={1}>
           <Link
             to={routesGen.mediaDetail(review.mediaType, review.mediaId)}
-            style={{ color: "unset", textDecoration: "none", pointerEvents: "none" }}
+            style={{
+              color: "unset",
+              textDecoration: "none",
+              pointerEvents: "none",
+            }}
           >
             <Typography
               variant="h6"

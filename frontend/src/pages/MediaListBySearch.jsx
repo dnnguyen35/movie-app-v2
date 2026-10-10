@@ -6,22 +6,18 @@ import MediaList from "./MediaList";
 import PageNotFound from "./PageNotFound";
 
 const MediaListBySearch = () => {
-  const {keyword} = useParams();
+  const { keyword } = useParams();
   const sanitizedKeyword = keyword.trim() ?? "";
 
   const fetchMedias = useCallback(
     (page) => mediaApi.search({ keyword: sanitizedKeyword, page }),
-    [sanitizedKeyword]
+    [sanitizedKeyword],
   );
 
-  if (!sanitizedKeyword) return <PageNotFound/>;
+  if (!sanitizedKeyword) return <PageNotFound />;
 
   return (
-    <MediaList
-      key={sanitizedKeyword}
-      title={""}
-      fetchMedias={fetchMedias}
-    />
+    <MediaList key={sanitizedKeyword} title={""} fetchMedias={fetchMedias} />
   );
 };
 

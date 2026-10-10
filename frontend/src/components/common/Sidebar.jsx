@@ -93,31 +93,6 @@ const Sidebar = ({ open, toggleSidebar }) => {
         <Typography variant="h6" marginBottom="10px" textTransform="uppercase">
           {t("sidebar.options.options")}
         </Typography>
-        {/* {menuConfigs.main.map((item, index) => (
-          <ListItemButton
-            key={index}
-            sx={{
-              borderRadius: "15px",
-              marginY: 1,
-              backgroundColor: appState.includes(item.state)
-                ? "primary.main"
-                : "unset",
-            }}
-            component={Link}
-            to={item.path}
-            onClick={() => toggleSidebar(false)}
-          >
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText
-              disableTypography
-              primary={
-                <Typography textTransform="uppercase">
-                  {t(`topbar.${item.display}`)}
-                </Typography>
-              }
-            />
-          </ListItemButton>
-        ))} */}
 
         {/* Genres */}
         <ListItemButton
@@ -133,11 +108,7 @@ const Sidebar = ({ open, toggleSidebar }) => {
             sx={{ textTransform: "uppercase" }}
           />
 
-          {expandedMenu === "genre" ? (
-            <ExpandLessIcon />
-          ) : (
-            <ExpandMoreIcon />
-          )}
+          {expandedMenu === "genre" ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </ListItemButton>
 
         <Collapse in={expandedMenu === "genre"} timeout="auto" unmountOnExit>
@@ -170,11 +141,7 @@ const Sidebar = ({ open, toggleSidebar }) => {
             sx={{ textTransform: "uppercase" }}
           />
 
-          {expandedMenu === "country" ? (
-            <ExpandLessIcon />
-          ) : (
-            <ExpandMoreIcon />
-          )}
+          {expandedMenu === "country" ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </ListItemButton>
 
         <Collapse in={expandedMenu === "country"} timeout="auto" unmountOnExit>
@@ -252,38 +219,6 @@ const Sidebar = ({ open, toggleSidebar }) => {
             }
           />
         </ListItemButton>
-
-        {/* <Typography variant="h6" marginBottom="20px" textTransform="uppercase">
-          {t("sidebar.language.language")}
-        </Typography>
-        <ListItemButton onClick={onSwitchLanguage}>
-          <ListItemIcon>
-            <img
-              src={
-                languageMode === "en"
-                  ? "/Flag_of_Vietnam.svg"
-                  : "/Flag_of_the_United_Kingdom.svg"
-              }
-              alt={languageMode === "vi" ? "Vietnam Flag" : "UK Flag"}
-              width="24"
-              height="24"
-              style={{
-                borderRadius: "50%",
-                objectFit: "cover",
-              }}
-            />
-          </ListItemIcon>
-          <ListItemText
-            disableTypography
-            primary={
-              <Typography textTransform="uppercase">
-                {languageMode === languageModes.en
-                  ? t("sidebar.language.vietnamese")
-                  : t("sidebar.language.english")}
-              </Typography>
-            }
-          />
-        </ListItemButton> */}
       </List>
     </>
   );

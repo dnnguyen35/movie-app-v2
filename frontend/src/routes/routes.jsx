@@ -23,11 +23,13 @@ export const routesGen = {
   notificationPost: "/notification-post",
   person: (id) => `/person/${id}`,
   mediaList: (listType) => `/list/${listType}`,
-  mediaDetail: (mediaSlug, mediaGenre, mediaId) => `/detail/${mediaSlug}?mediaGenre=${mediaGenre}&mediaId=${mediaId}`,
-  mediaStream: (mediaSlug, mediaGenre, mediaId) => `/stream/${mediaSlug}?mediaGenre=${mediaGenre}&mediaId=${mediaId}`,
+  mediaDetail: (mediaSlug, mediaGenre, mediaId) =>
+    `/detail/${mediaSlug}?mediaGenre=${mediaGenre}&mediaId=${mediaId}`,
+  mediaStream: (mediaSlug, mediaGenre, mediaId) =>
+    `/stream/${mediaSlug}?mediaGenre=${mediaGenre}&mediaId=${mediaId}`,
   mediaListByGenre: (genreSlug) => `/list/genres/${genreSlug}`,
   mediaListByCountry: (countrySlug) => `/list/country/${countrySlug}`,
-  mediaSearch: (keyword) => `/list/search/${keyword}`
+  mediaSearch: (keyword) => `/list/search/${keyword}`,
 };
 
 const routes = [
@@ -83,7 +85,7 @@ const routes = [
   },
   {
     path: "/list/search/:keyword",
-    element: <MediaListBySearch/>
+    element: <MediaListBySearch />,
   },
   {
     path: "/detail/:mediaSlug",

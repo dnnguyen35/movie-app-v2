@@ -29,7 +29,7 @@ const MediaList = ({ title, fetchMedias }) => {
     setMedias([]);
     setCurrentPage(1);
     setHasMore(true);
-    setSlugText("")
+    setSlugText("");
     setMediaLoading(true);
     dispatch(setGlobalLoading(true));
 
@@ -50,11 +50,11 @@ const MediaList = ({ title, fetchMedias }) => {
 
         setMedias(items);
         setCurrentPage(1);
-        setSlugText(data?.titlePage)
+        setSlugText(data?.titlePage);
         setHasMore(
           pagination?.totalPages != null
             ? 1 < pagination.totalPages
-            : items.length > 0
+            : items.length > 0,
         );
       } catch {
         if (!cancelled) {
@@ -102,7 +102,7 @@ const MediaList = ({ title, fetchMedias }) => {
       setHasMore(
         pagination?.totalPages != null
           ? nextPage < pagination.totalPages
-          : items.length > 0
+          : items.length > 0,
       );
     } catch {
       if (requestId === requestIdRef.current) {
@@ -150,10 +150,7 @@ const MediaList = ({ title, fetchMedias }) => {
             disabled={mediaLoading}
             onClick={onLoadMore}
             loadingIndicator={
-              <CircularProgress
-                size={20}
-                sx={{ color: "primary.main" }}
-              />
+              <CircularProgress size={20} sx={{ color: "primary.main" }} />
             }
           >
             {t("common.see_more")}

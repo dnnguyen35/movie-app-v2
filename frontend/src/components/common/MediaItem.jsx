@@ -32,13 +32,21 @@ const MediaItem = ({ media, mediaType }) => {
     <Link
       to={
         mediaType !== "people" && media.slug && media.category && media._id
-          ? routesGen.mediaDetail(media.slug, media.category[0]?.slug, media._id)
+          ? routesGen.mediaDetail(
+              media.slug,
+              media.category[0]?.slug,
+              media._id,
+            )
           : "#"
       }
     >
       <Box
         sx={{
-          ...uiConfigs.style.backgroundImage(posterPath.includes("https") ? posterPath : tmdbConfigs.kkmovieImagePath(posterPath)),
+          ...uiConfigs.style.backgroundImage(
+            posterPath.includes("https")
+              ? posterPath
+              : tmdbConfigs.kkmovieImagePath(posterPath),
+          ),
           paddingTop: "160%",
           borderRadius: "2%",
           overflow: "hidden",

@@ -81,9 +81,7 @@ const MediaStream = () => {
       if (response) {
         setMediaEpisodes(response.detail.item.episodes);
         setCurrentServer(response.detail.item.episodes[0]);
-        setCurrentEpisode(
-          response.detail.item.episodes[0].server_data[0],
-        );
+        setCurrentEpisode(response.detail.item.episodes[0].server_data[0]);
         setMedia(response);
         setIsFavorite(response.isFavorite);
         setGenres(response.detail.item.category.splice(0, 2));
@@ -148,7 +146,8 @@ const MediaStream = () => {
     setOnRequest(true);
 
     const favorite = listFavorites.find(
-      (favorite) => favorite.mediaId.toString() === media.detail.item._id.toString(),
+      (favorite) =>
+        favorite.mediaId.toString() === media.detail.item._id.toString(),
     );
 
     const { response, error } = await favoriteApi.remove({
@@ -165,15 +164,14 @@ const MediaStream = () => {
     }
   };
 
-  if (!mediaSlug || !mediaGenre || !mediaId)
-    return <PageNotFound />;
+  if (!mediaSlug || !mediaGenre || !mediaId) return <PageNotFound />;
 
   if (!media && !getMediaError) return null;
 
   if (!media && getMediaError) return <PageNotFound />;
 
   return (
-    media &&(
+    media && (
       <>
         <Box
           sx={{
@@ -205,7 +203,9 @@ const MediaStream = () => {
               {/* <Container header={t("mediadetail.videos")}> */}
               <MediaPlayer
                 videoUrl={currentEpisode?.link_m3u8}
-                mediaThumbUrl={media.detail.item.thumb_url || media.detail.item.poster_url}
+                mediaThumbUrl={
+                  media.detail.item.thumb_url || media.detail.item.poster_url
+                }
               />
 
               {currentServer && (
@@ -247,7 +247,8 @@ const MediaStream = () => {
                     borderRadius: "2%",
                     paddingTop: "140%",
                     ...uiConfigs.style.backgroundImage(
-                        media.detail.item.poster_url || media.detail.item.thumb_url
+                      media.detail.item.poster_url ||
+                        media.detail.item.thumb_url,
                     ),
                   }}
                 />
@@ -291,7 +292,9 @@ const MediaStream = () => {
                   {/* rate and genres */}
                   <Stack direction="row" spacing={1} alignItems="center">
                     {/* rate */}
-                    <CircularRate value={media.detail.item.tmdb.vote_average || 0} />
+                    <CircularRate
+                      value={media.detail.item.tmdb.vote_average || 0}
+                    />
                     {/* rate */}
                     <Divider orientation="vertical" />
                     {/* genres */}
@@ -312,9 +315,7 @@ const MediaStream = () => {
                     <Stack direction="row" spacing={1} alignItems="center">
                       <CalendarMonthIcon color="primary" />
                       <Chip
-                        label={
-                          media.detail.item.year
-                        }
+                        label={media.detail.item.year}
                         variant="filled"
                         color="primary"
                       />
@@ -336,14 +337,12 @@ const MediaStream = () => {
                     variant="body1"
                     sx={{ ...uiConfigs.style.typoLines(5) }}
                   >
-                    {
-                          media.detail.item.content
-                            ?.replace(/<\/?[^>]+(>|$)/g, "")
-                            ?.replaceAll("&quot;", '"')
-                            ?.replaceAll("&amp;", "&")
-                            ?.replaceAll("&#039;", "'")
-                            ?.replaceAll("&apos;", "'") || media.detail.overview
-                            }
+                    {media.detail.item.content
+                      ?.replace(/<\/?[^>]+(>|$)/g, "")
+                      ?.replaceAll("&quot;", '"')
+                      ?.replaceAll("&amp;", "&")
+                      ?.replaceAll("&#039;", "'")
+                      ?.replaceAll("&apos;", "'") || media.detail.overview}
                   </Typography>
                   {/* overview */}
 

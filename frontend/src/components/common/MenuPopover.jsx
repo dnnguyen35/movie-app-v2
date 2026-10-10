@@ -1,20 +1,8 @@
-import {
-  Box,
-  Button,
-  Paper,
-  Popper,
-} from "@mui/material";
+import { Box, Button, Paper, Popper } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Link } from "react-router-dom";
 
-const MenuPopover = ({
-  label,
-  items,
-  anchorEl,
-  onOpen,
-  onClose,
-  getPath,
-}) => {
+const MenuPopover = ({ label, items, anchorEl, onOpen, onClose, getPath }) => {
   const open = Boolean(anchorEl);
 
   return (
@@ -30,9 +18,7 @@ const MenuPopover = ({
           borderColor: "primary.main",
 
           "&:hover": {
-            backgroundColor: open
-              ? "primary.dark"
-              : "action.hover",
+            backgroundColor: open ? "primary.dark" : "action.hover",
           },
           borderRadius: "25px",
         }}
@@ -78,7 +64,7 @@ const MenuPopover = ({
                   "&:hover": {
                     backgroundColor: "transparent",
                     color: "primary.main",
-                  }
+                  },
                 }}
               >
                 {item.name}

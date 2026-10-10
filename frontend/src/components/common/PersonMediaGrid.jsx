@@ -23,7 +23,7 @@ const PersonMediaGrid = ({ personId, languageMode }) => {
 
       if (response) {
         const mediasSorted = response.cast.sort(
-          (a, b) => getReleaseDate(b) - getReleaseDate(a)
+          (a, b) => getReleaseDate(b) - getReleaseDate(a),
         );
         setMedias([...mediasSorted]);
         setFilteredMedias([...mediasSorted].splice(0, perPage));

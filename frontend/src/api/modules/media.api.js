@@ -2,26 +2,21 @@ import privateClient from "../client/private.client.js";
 import publicClient from "../client/public.client.js";
 
 const mediaEndpoints = {
-  list: ({ page }) =>
-    `/medias/list?page=${page}`,
+  list: ({ page }) => `/medias/list?page=${page}`,
 
-  listByType: ({ type, page }) =>
-    `/medias/list/${type}?page=${page}`,
+  listByType: ({ type, page }) => `/medias/list/${type}?page=${page}`,
 
   detail: ({ mediaSlug, mediaGenre, mediaId }) =>
     `/medias/detail/${mediaSlug}?mediaGenre=${mediaGenre}&mediaId=${mediaId}`,
 
-  images: ({ mediaSlug }) =>
-    `/medias/images/${mediaSlug}`,
+  images: ({ mediaSlug }) => `/medias/images/${mediaSlug}`,
 
-  genres: () =>
-    `/medias/genres`,
+  genres: () => `/medias/genres`,
 
   listByGenre: ({ genreSlug, page }) =>
     `/medias/genres/${genreSlug}?page=${page}`,
 
-  countries: () =>
-    `/medias/countries`,
+  countries: () => `/medias/countries`,
 
   listByCountry: ({ countrySlug, page }) =>
     `/medias/country/${countrySlug}?page=${page}`,
@@ -33,9 +28,7 @@ const mediaEndpoints = {
 const mediaApi = {
   getList: async ({ page }) => {
     try {
-      const response = await publicClient.get(
-        mediaEndpoints.list({ page }),
-      );
+      const response = await publicClient.get(mediaEndpoints.list({ page }));
 
       return { response };
     } catch (error) {
@@ -85,9 +78,7 @@ const mediaApi = {
 
   getGenres: async () => {
     try {
-      const response = await publicClient.get(
-        mediaEndpoints.genres(),
-      );
+      const response = await publicClient.get(mediaEndpoints.genres());
 
       return { response };
     } catch (error) {
@@ -112,9 +103,7 @@ const mediaApi = {
 
   getCountries: async () => {
     try {
-      const response = await publicClient.get(
-        mediaEndpoints.countries(),
-      );
+      const response = await publicClient.get(mediaEndpoints.countries());
 
       return { response };
     } catch (error) {

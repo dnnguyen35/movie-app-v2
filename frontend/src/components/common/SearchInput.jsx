@@ -1,12 +1,8 @@
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
-import {
-  Box,
-  IconButton,
-  InputBase,
-} from "@mui/material";
+import { Box, IconButton, InputBase } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 import mediaApi from "../../api/modules/media.api";
 import SearchDropdown from "./SearchDropdown";
@@ -19,7 +15,7 @@ const SearchInput = () => {
   const [keyword, setKeyword] = useState("");
 
   const [totalPages, setTotalPages] = useState(1);
-  
+
   const { t } = useTranslation();
 
   const requestIdRef = useRef(0);
@@ -53,9 +49,9 @@ const SearchInput = () => {
       if (response) {
         setResults(response?.data?.items || []);
         setTotalPages(response?.data?.params?.pagination?.totalPages || 1);
-        setKeyword(keyword)
+        setKeyword(keyword);
       } else if (error) {
-        setKeyword("")
+        setKeyword("");
         setResults([]);
       }
 
@@ -71,7 +67,7 @@ const SearchInput = () => {
     requestIdRef.current++;
 
     setQuery("");
-    setKeyword("")
+    setKeyword("");
     setResults([]);
     setLoading(false);
     setTotalPages(1);
@@ -118,7 +114,7 @@ const SearchInput = () => {
         <InputBase
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder={ t("mediasearch.search_placeholder")}
+          placeholder={t("mediasearch.search_placeholder")}
           sx={{
             flex: 1,
             minWidth: 0,

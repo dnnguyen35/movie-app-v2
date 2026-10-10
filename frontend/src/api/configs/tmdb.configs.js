@@ -9,7 +9,7 @@ const mediaListType = {
   phimbo: "phim-bo",
   phimhoathinh: "hoat-hinh",
   tvshows: "tv-shows",
-}
+};
 
 const mediaCategory = {
   popular: "popular",
@@ -25,9 +25,10 @@ const posterPath = (imgEndpoint) =>
 const youtubePath = (videoId) =>
   `https://www.youtube.com/embed/${videoId}?controls=0`;
 
-const kkmovieImagePath = (imgEndpoint) =>(
-  !imgEndpoint.includes("danviet.vn") ? `https://phimimg.com/${imgEndpoint}` : `https://i.ex-cdn.com/${imgEndpoint}`
-)
+const kkmovieImagePath = (imgEndpoint) =>
+  !imgEndpoint.includes("danviet.vn")
+    ? `https://phimimg.com/${imgEndpoint}`
+    : `https://i.ex-cdn.com/${imgEndpoint}`;
 
 const tmdbConfigs = {
   mediaType,

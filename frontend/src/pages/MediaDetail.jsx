@@ -153,7 +153,8 @@ const MediaDetail = () => {
     setOnRequest(true);
 
     const favorite = listFavorites.find(
-      (favorite) => favorite.mediaId.toString() === media.detail.item._id.toString(),
+      (favorite) =>
+        favorite.mediaId.toString() === media.detail.item._id.toString(),
     );
 
     const { response, error } = await favoriteApi.remove({
@@ -182,9 +183,7 @@ const MediaDetail = () => {
     media && (
       <>
         <ImageHeader
-          imgPath={
-            media.detail.item.thumb_url || media.detail.item.poster_url
-          }
+          imgPath={media.detail.item.thumb_url || media.detail.item.poster_url}
         />
         <Box
           sx={{
@@ -216,7 +215,8 @@ const MediaDetail = () => {
                     borderRadius: "2%",
                     paddingTop: "140%",
                     ...uiConfigs.style.backgroundImage(
-                        media.detail.item.poster_url || media.detail.item.thumb_url
+                      media.detail.item.poster_url ||
+                        media.detail.item.thumb_url,
                     ),
                   }}
                 />
@@ -260,7 +260,9 @@ const MediaDetail = () => {
                   {/* rate and genres */}
                   <Stack direction="row" spacing={1} alignItems="center">
                     {/* rate */}
-                    <CircularRate value={media.detail.item.tmdb.vote_average || 0} />
+                    <CircularRate
+                      value={media.detail.item.tmdb.vote_average || 0}
+                    />
                     {/* rate */}
                     <Divider orientation="vertical" />
                     {/* genres */}
@@ -281,9 +283,7 @@ const MediaDetail = () => {
                     <Stack direction="row" spacing={1} alignItems="center">
                       <CalendarMonthIcon color="primary" />
                       <Chip
-                        label={
-                          media.detail.item.year
-                        }
+                        label={media.detail.item.year}
                         variant="filled"
                         color="primary"
                       />
@@ -305,14 +305,12 @@ const MediaDetail = () => {
                     variant="body1"
                     sx={{ ...uiConfigs.style.typoLines(5) }}
                   >
-                    {
-                          media.detail.item.content
-                            ?.replace(/<\/?[^>]+(>|$)/g, "")
-                            ?.replaceAll("&quot;", '"')
-                            ?.replaceAll("&amp;", "&")
-                            ?.replaceAll("&#039;", "'")
-                            ?.replaceAll("&apos;", "'")
-                            }
+                    {media.detail.item.content
+                      ?.replace(/<\/?[^>]+(>|$)/g, "")
+                      ?.replaceAll("&quot;", '"')
+                      ?.replaceAll("&amp;", "&")
+                      ?.replaceAll("&#039;", "'")
+                      ?.replaceAll("&apos;", "'")}
                   </Typography>
                   {/* overview */}
 
@@ -344,7 +342,9 @@ const MediaDetail = () => {
                       onClick={() => {
                         if (media.detail.item.episodes.length === 0) return;
 
-                        navigate(routesGen.mediaStream(mediaSlug, mediaGenre, mediaId));
+                        navigate(
+                          routesGen.mediaStream(mediaSlug, mediaGenre, mediaId),
+                        );
                       }}
                     >
                       {media.detail.item.episodes.length > 0
@@ -368,21 +368,22 @@ const MediaDetail = () => {
 
           {/* media trailers */}
           <div>
-          {media.detail.item.trailer_url && (
+            {media.detail.item.trailer_url && (
               <Container header={t("mediadetail.videos")}>
-                <MediaVideosSlide
-                  videos={[media.detail.item.trailer_url]}
-                />
+                <MediaVideosSlide videos={[media.detail.item.trailer_url]} />
               </Container>
-            )
-          }
+            )}
           </div>
           {/* media trailers */}
 
           {/* media backdrop */}
           {media.images.images.length > 0 && (
             <Container header={t("mediadetail.backdrops")}>
-              <BackdropSlide backdrops={[...media.images.images].filter(image => image.type === "backdrop")} />
+              <BackdropSlide
+                backdrops={[...media.images.images].filter(
+                  (image) => image.type === "backdrop",
+                )}
+              />
             </Container>
           )}
           {/* media backdrop */}
@@ -390,16 +391,17 @@ const MediaDetail = () => {
           {/* media posters */}
           {media.images.images.length > 0 && (
             <Container header={t("mediadetail.posters")}>
-              <PosterSlide posters={[...media.images.images].filter(image => image.type === "poster")} />
+              <PosterSlide
+                posters={[...media.images.images].filter(
+                  (image) => image.type === "poster",
+                )}
+              />
             </Container>
           )}
           {/* media posters */}
 
           {/* media reviews */}
-          <MediaReview
-            reviews={media.reviews}
-            media={media}
-          />
+          <MediaReview reviews={media.reviews} media={media} />
           {/* media reviews */}
 
           {/* media recommendation */}

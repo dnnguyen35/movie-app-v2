@@ -23,13 +23,16 @@ const CastSlide = ({ casts }) => {
       >
         {casts.map((cast, index) => (
           <SwiperSlide key={index}>
-            <Link to={routesGen.person(cast.id)} style={{ pointerEvents: "none" }}>
+            <Link
+              to={routesGen.person(cast.id)}
+              style={{ pointerEvents: "none" }}
+            >
               <Box
                 sx={{
                   paddingTop: "120%",
                   color: "text.primary",
                   ...uiConfigs.style.backgroundImage(
-                    "https://res.cloudinary.com/duccdrxot/image/upload/v1758618113/ajji9rjgeo4a6tg7kx1j.jpg"
+                    "https://res.cloudinary.com/duccdrxot/image/upload/v1758618113/ajji9rjgeo4a6tg7kx1j.jpg",
                   ),
                 }}
               >

@@ -14,7 +14,7 @@ const BackdropSlide = ({ backdrops }) => {
               backgroundPosition: "top",
               backgroundSize: "cover",
               backgroundImage: `url(${tmdbConfigs.backdropPath(
-                item.file_path
+                item.file_path,
               )})`,
             }}
           />

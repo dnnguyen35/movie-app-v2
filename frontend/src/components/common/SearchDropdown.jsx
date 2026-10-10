@@ -1,22 +1,11 @@
-import {
-  Box,
-  CircularProgress,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Box, CircularProgress, Paper, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 
 import { routesGen } from "../../routes/routes";
 
-const SearchDropdown = ({
-  query,
-  results,
-  loading,
-  onClose,
-  totalPages
-}) => {
+const SearchDropdown = ({ query, results, loading, onClose, totalPages }) => {
   const { t } = useTranslation();
 
   const [isAtBottom, setIsAtBottom] = useState(false);
@@ -25,8 +14,7 @@ const SearchDropdown = ({
     const element = event.currentTarget;
 
     const atBottom =
-      element.scrollTop + element.clientHeight >=
-      element.scrollHeight - 5;
+      element.scrollTop + element.clientHeight >= element.scrollHeight - 5;
 
     setIsAtBottom(atBottom);
   };
@@ -53,13 +41,11 @@ const SearchDropdown = ({
 
         backgroundColor: "background.paper",
 
-        boxShadow:
-          "0 12px 40px rgba(0, 0, 0, 0.18)",
+        boxShadow: "0 12px 40px rgba(0, 0, 0, 0.18)",
 
         zIndex: 10000,
 
-        animation:
-          "searchDropdownEnter 180ms cubic-bezier(0.16, 1, 0.3, 1)",
+        animation: "searchDropdownEnter 180ms cubic-bezier(0.16, 1, 0.3, 1)",
 
         "@keyframes searchDropdownEnter": {
           from: {
@@ -174,12 +160,10 @@ const SearchDropdown = ({
                   textDecoration: "none",
                   color: "inherit",
 
-                  transition:
-                    "background-color 160ms ease",
+                  transition: "background-color 160ms ease",
 
                   "&:hover": {
-                    backgroundColor:
-                      "action.hover",
+                    backgroundColor: "action.hover",
                   },
 
                   "&:not(:last-child)::after": {
@@ -193,8 +177,7 @@ const SearchDropdown = ({
 
                     height: "1px",
 
-                    backgroundColor:
-                      "divider",
+                    backgroundColor: "divider",
 
                     opacity: 0.5,
                   },
@@ -212,8 +195,7 @@ const SearchDropdown = ({
 
                     borderRadius: 1.5,
 
-                    backgroundColor:
-                      "action.hover",
+                    backgroundColor: "action.hover",
                   }}
                 >
                   <Box
@@ -228,8 +210,7 @@ const SearchDropdown = ({
 
                       objectFit: "cover",
 
-                      transition:
-                        "transform 220ms ease",
+                      transition: "transform 220ms ease",
 
                       "&:hover": {
                         transform: "scale(1.04)",
@@ -313,8 +294,7 @@ const SearchDropdown = ({
 
                         borderRadius: "50%",
 
-                        backgroundColor:
-                          "text.disabled",
+                        backgroundColor: "text.disabled",
                       }}
                     />
 
@@ -336,7 +316,7 @@ const SearchDropdown = ({
           </Box>
 
           {/* See all */}
-          {(isAtBottom && totalPages > 1) && (
+          {isAtBottom && totalPages > 1 && (
             <Box
               component={Link}
               to={routesGen.mediaSearch(query)}
@@ -358,31 +338,25 @@ const SearchDropdown = ({
                 fontSize: "0.78rem",
                 fontWeight: 600,
 
-                backgroundColor:
-                  "background.paper",
+                backgroundColor: "background.paper",
 
-                transition:
-                  "background-color 160ms ease, color 160ms ease",
+                transition: "background-color 160ms ease, color 160ms ease",
 
-                animation:
-                  "seeAllEnter 180ms ease-out",
+                animation: "seeAllEnter 180ms ease-out",
 
                 "@keyframes seeAllEnter": {
                   from: {
                     opacity: 0,
-                    transform:
-                      "translateY(4px)",
+                    transform: "translateY(4px)",
                   },
                   to: {
                     opacity: 1,
-                    transform:
-                      "translateY(0)",
+                    transform: "translateY(0)",
                   },
                 },
 
                 "&:hover": {
-                  backgroundColor:
-                    "action.hover",
+                  backgroundColor: "action.hover",
                   color: "primary.dark",
                 },
               }}

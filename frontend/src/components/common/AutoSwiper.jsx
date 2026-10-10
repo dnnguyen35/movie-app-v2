@@ -10,9 +10,7 @@ const AutoSwiper = ({ children }) => {
           width: { xs: "50%", sm: "35%", md: "25%", lg: "20.5%" },
           paddingBottom: "3rem",
         },
-        // "& .swiper-pagination-bullet": {
-        //   backgroundColor: "primary.main",
-        // },
+
         "& .swiper-button-prev, & .swiper-button-next": {
           opacity: 1,
           color: "primary.main",

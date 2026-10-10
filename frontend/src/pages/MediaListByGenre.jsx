@@ -7,11 +7,11 @@ import { useTranslation } from "react-i18next";
 
 const MediaListByGenre = () => {
   const { genreSlug } = useParams();
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   const fetchMedias = useCallback(
     (page) => mediaApi.getListByGenre({ genreSlug, page }),
-    [genreSlug]
+    [genreSlug],
   );
 
   return (

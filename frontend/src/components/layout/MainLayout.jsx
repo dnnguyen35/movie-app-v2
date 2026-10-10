@@ -41,6 +41,7 @@ const MainLayout = () => {
       {/* announcement banner */}
       <AnnouncementBanner />
       {/* announcement banner */}
+
       <Box display="flex" minHeight="100vh">
         {/* header */}
         <Topbar />
@@ -52,6 +53,7 @@ const MainLayout = () => {
         </Box>
         {/* main */}
       </Box>
+
       {/* footer */}
       <Footer />
       {/* footer */}
