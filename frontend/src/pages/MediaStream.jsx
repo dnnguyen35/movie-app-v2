@@ -36,7 +36,6 @@ import PageNotFound from "./PageNotFound";
 import { useTranslation } from "react-i18next";
 import MediaVideo from "../components/common/MediaVideo";
 import EpisodeSelector from "../components/common/EpisodeSelector";
-import videoSourceApi from "../api/modules/video.api";
 import MediaPlayer from "../components/common/MediaPlayer";
 import { convertGenreToSlugString } from "../utils/convertGenreToSlugString.utils";
 import { convertCountryToSlugString } from "../utils/convertCountryIsoToSlugString.utils";
