@@ -118,7 +118,7 @@ const MediaDetail = () => {
 
       setIsFavorite(isFavorite);
     }
-  }, [user]);
+  }, [user, listFavorites]);
 
   const onFavoriteClick = async () => {
     if (!user) return dispatch(setAuthModalOpen(true));
@@ -345,7 +345,12 @@ const MediaDetail = () => {
                       size="large"
                       startIcon={<PlayArrowIcon />}
                       onClick={() => {
-                        if (media.detail.item.episodes.length === 0) return;
+                        if (
+                          media.detail.item.episodes.length === 0 ||
+                          media.detail.item.episodes[0].server_data[0]
+                            .link_m3u8 === ""
+                        )
+                          return;
 
                         navigate(
                           routesGen.mediaStream(mediaSlug, mediaGenre, mediaId),

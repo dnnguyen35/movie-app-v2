@@ -111,7 +111,7 @@ const MediaStream = () => {
 
       setIsFavorite(isFavorite);
     }
-  }, [user]);
+  }, [user, listFavorites]);
 
   const onFavoriteClick = async () => {
     if (!user) return dispatch(setAuthModalOpen(true));
