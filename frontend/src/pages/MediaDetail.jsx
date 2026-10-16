@@ -48,6 +48,7 @@ import { convertGenreToSlugString } from "../utils/convertGenreToSlugString.util
 import { convertCountryToSlugString } from "../utils/convertCountryIsoToSlugString.utils";
 import { convertMinuteToHour } from "../utils/convertMinuteToHour.utils";
 import { languageModes } from "../configs/language.config";
+import favoriteUtils from "../utils/favorite.utils";
 
 const MediaDetail = () => {
   const { mediaSlug } = useParams();
@@ -110,7 +111,12 @@ const MediaDetail = () => {
       setIsFavorite(false);
       return;
     } else if (user && media) {
-      setIsFavorite(media.isFavorite);
+      const isFavorite = favoriteUtils.check({
+        listFavorites,
+        mediaId: media?.detail?.item._id,
+      });
+
+      setIsFavorite(isFavorite);
     }
   }, [user]);
 
@@ -346,7 +352,9 @@ const MediaDetail = () => {
                         );
                       }}
                     >
-                      {media.detail.item.episodes.length > 0
+                      {media.detail.item.episodes.length > 0 &&
+                      media.detail.item.episodes[0].server_data[0].link_m3u8 !==
+                        ""
                         ? t("common.watch_now")
                         : t("common.available_soon")}
                     </Button>
